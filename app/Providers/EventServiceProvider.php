@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\AddUserToRecentLogins;
 use App\Listeners\ClearApiTokenForAuthenticatedUser;
 use App\Listeners\SetApiTokenForAuthenticatedUser;
 use Illuminate\Auth\Events\Login;
@@ -23,7 +24,8 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
         ],
         Login::class=>[
-            SetApiTokenForAuthenticatedUser::class
+            SetApiTokenForAuthenticatedUser::class,
+            AddUserToRecentLogins::class
         ],
         Logout::class=>[
             ClearApiTokenForAuthenticatedUser::class

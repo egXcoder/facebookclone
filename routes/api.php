@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+Route::post('/recent-logins-cookie/{account_id}/delete','\App\Http\Controllers\RecentLoginController@delete');
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
