@@ -61,12 +61,12 @@
                                 <div class="row recent-container no-gutters">
                                     @foreach($recent_logins as $recent)
                                     <div class="col-md-4">
-                                        <form method="POST" action="" class="bg-white rounded recent-login mx-1"
-                                            data-id="{{$recent->id}}">
+                                        <form method="POST" action="{{route('recent-logins.login',$recent->id)}}"
+                                            class="bg-white rounded recent-login mx-1" onclick="this.submit()">
                                             @csrf
                                             <input type="hidden" name="token" value="{{$recent->token}}">
                                             <div class="delete-recent-login"
-                                                onclick="$('form#delete-recent-login-{{$recent->id}}').submit()">
+                                                onclick="event.stopPropagation();('form#delete-recent-login-{{$recent->id}}').submit()">
                                                 <div class="circle"
                                                     style="position: absolute;top:1px;left:1px;width:15px;height:15px;border-radius:50%;background:black;opacity:0.6;text-align:center;z-index:2;">
                                                 </div>
@@ -80,7 +80,8 @@
                                             <p class="mb-0 p-2 text-center">{{$recent->name}}</p>
                                         </form>
                                     </div>
-                                    <form action="{{route('recent-logins.delete',$recent->id)}}" method="POST" id="delete-recent-login-{{$recent->id}}">
+                                    <form action="{{route('recent-logins.delete',$recent->id)}}" method="POST"
+                                        id="delete-recent-login-{{$recent->id}}">
                                         @csrf
                                         <input type="hidden" name="id" value="{{$recent->id}}">
                                         <input type="hidden" name="token" value="{{$recent->token}}">
@@ -100,6 +101,17 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ClientJS/0.1.11/client.min.js"></script>
+    <script>
+        let client = new ClientJS();
+        let fingerprint = client.getCustomFingerprint(client.getOS(),client.getOSVersion(),client.getCPU(),client.getScreenPrint());
+        let user_agent = client.getUserAgent();
+        let fingerprint_element = "<input type='hidden' name='fingerprint' value='"+fingerprint+"'>";
+        let user_agent_element = "<input type='hidden' name='user_agent' value='"+user_agent+"'>";
+        $("form#login,form.recent-login").prepend(fingerprint_element);
+        $("form#login,form.recent-login").prepend(user_agent_element);
+    </script>
 
     @yield('js')
 

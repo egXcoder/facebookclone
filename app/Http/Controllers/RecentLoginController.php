@@ -4,9 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\RecentLogin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class RecentLoginController extends Controller
 {
+    public function login(RecentLogin $recent)
+    {
+        if ($recent->isValidToLogin() && $recent->token == request('token')) {
+            Auth::guard()->login($recent->user, true);
+            $new_recent = $recent->consumeAndGenerateNewInstance();
+            RecentLogin::AddNewRecentLoginToCookie($new_recent);
+            request()->session()->regenerate();
+            return redirect()->intended('/');
+        }
+    }
+
     public function delete(RecentLogin $recent)
     {
         if ($recent->isValidToShow() && $recent->token == request('token')) {

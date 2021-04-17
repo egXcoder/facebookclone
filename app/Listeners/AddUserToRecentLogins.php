@@ -25,35 +25,19 @@ class AddUserToRecentLogins
      */
     public function handle(Login $event)
     {
-        if($this->isRecentLoginForUserAlreadyInCookie($event->user)){
+        if ($this->isRecentLoginForUserAlreadyInCookie($event->user)) {
             return;
         }
 
-        $recent = RecentLogin::create([
-            'user_id'=>$event->user->id,
-            'token'=>\Illuminate\Support\Str::random(60),
-            'ip'=>  request()->server('REMOTE_ADDR'),
-            'fingerprint'=>request('fingerprint'),
-            'user_agent'=>request('user_agent'),
+        $recent = RecentLogin::createFromRequest([
+            'user_id'=>$event->user->id
         ]);
 
-        $this->updateRecentLoginsCookie($recent);
+        RecentLogin::AddNewRecentLoginToCookie($recent);
     }
 
     protected function isRecentLoginForUserAlreadyInCookie($user)
     {
         return array_key_exists($user->id, RecentLogin::getRecentLoginsFromCookie());
-    }
-
-    protected function updateRecentLoginsCookie(RecentLogin $recent)
-    {
-        $recentLogins = $this->updateRecentLogins(RecentLogin::getRecentLoginsFromCookie(), $recent);
-        RecentLogin::setRecentLoginsToCookie($recentLogins);
-    }
-    
-    protected function updateRecentLogins(array $recentLogins, RecentLogin $recent)
-    {
-        $recentLogins[$recent->user_id] = $recent->token;
-        return $recentLogins;
     }
 }

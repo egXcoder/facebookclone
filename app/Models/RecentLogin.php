@@ -2,67 +2,43 @@
 
 namespace App\Models;
 
+use App\Traits\RecentLoginInCookie;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cookie;
 
 class RecentLogin extends Model
 {
-    use HasFactory;
-    
-    public const COOKIE_KEY = 'recent_logins';
+    use HasFactory,RecentLoginInCookie;
+
+    public const DAYS_FOR_RECENT_LOGIN_TO_BE_VALID = 10;
 
     protected $guarded = [];
-    
-    public static function getRecentLoginsFromCookie()
+
+    public static function createFromRequest($parameters)
     {
-        return json_decode(Cookie::get(self::COOKIE_KEY), true) ?? [];
+        return self::create(
+            array_merge([
+                'user_id'=>request('user_id'),
+                'token'=>\Illuminate\Support\Str::random(60),
+                'ip'=>  request()->server('REMOTE_ADDR'),
+                'fingerprint'=>request('fingerprint'),
+                'user_agent'=>request('user_agent'),
+            ], $parameters)
+        );
     }
     
-    public static function setRecentLoginsToCookie(array $recentLogins)
+    public function isValidToLogin()
     {
-        Cookie::queue(cookie()->forever(self::COOKIE_KEY, json_encode($recentLogins)));
-    }
-
-    public static function removeUserFromCookie($user_id)
-    {
-        $recent_logins = self::getRecentLoginsFromCookie();
-        unset($recent_logins[$user_id]);
-        self::setRecentLoginsToCookie($recent_logins);
-    }
-
-    public function isValidForLogin()
-    {
-        if (!$this->isValidToShow()) {
-            return false;
-        }
-
-        if ($this->isConsumed()) {
-            return false;
-        }
-
-        if (!$this->checkIfSameFingerprint(request('fingerprint'))) {
-            return false;
-        }
-
-        if ($this->isCreatedFromLongTime()) {
-            return false;
-        }
-
-        return true;
+        return $this->isValidToShow() &&
+        $this->checkIfSameFingerprint(request('fingerprint')) &&
+        !$this->isConsumed() &&
+        !$this->isCreatedFromLongTime();
     }
 
     public function isValidToShow()
     {
-        if ($this->is_deleted) {
-            return false;
-        }
-
-        if (!$this->user) {
-            return false;
-        }
-
-        return true;
+        return $this->user && !$this->is_deleted;
     }
 
     protected function isConsumed()
@@ -77,9 +53,22 @@ class RecentLogin extends Model
 
     protected function isCreatedFromLongTime()
     {
-        if ($this->created_at->diffInDays(time())>10) {
+        if ($this->created_at->diffInDays(Carbon::now())>self::DAYS_FOR_RECENT_LOGIN_TO_BE_VALID) {
             return true;
         }
+    }
+
+    public function consumeAndGenerateNewInstance()
+    {
+        $new_recent = self::createFromRequest([
+           'user_id'=>$this->user_id
+       ]);
+
+        $this->update([
+           'generated_recent_id' => $new_recent->id
+       ]);
+
+        return $new_recent;
     }
 
     public function user()

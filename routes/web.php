@@ -22,5 +22,6 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::post('recent-logins/{recent}/delete','\App\Http\Controllers\RecentLoginController@delete')->name('recent-logins.delete');
+Route::post('recent-logins/{recent}/login','\App\Http\Controllers\RecentLoginController@login')->name('recent-logins.login');
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
