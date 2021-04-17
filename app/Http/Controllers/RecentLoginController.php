@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RecentLogin;
+use App\Providers\RouteServiceProvider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +16,7 @@ class RecentLoginController extends Controller
             $new_recent = $recent->consumeAndGenerateNewInstance();
             RecentLogin::AddNewRecentLoginToCookie($new_recent);
             request()->session()->regenerate();
-            return redirect()->intended('/');
+            return redirect()->intended(RouteServiceProvider::HOME);
         }
     }
 
