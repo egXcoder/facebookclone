@@ -2,22 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\RecentLogin;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cookie;
 
 class RecentLoginController extends Controller
 {
-    public function delete()
+    public function delete(RecentLogin $recent)
     {
-        $recent_logins = json_decode(Cookie::get('recent_logins'), true);
-        $recent_logins = $this->removeAccountFromRecentLogins($recent_logins, request('account_id'));
-        Cookie::queue(cookie()->forever('recent_logins', json_encode($recent_logins)));
-        return response()->json(['success'=>'Account is deleted successfully']);
-    }
+        if ($recent->isValidToShow() && $recent->token == request('token')) {
+            $recent->update(['is_deleted'=>true]);
+        }
 
-    protected function removeAccountFromRecentLogins(array $recent_logins, $id)
-    {
-        unset($recent_logins[$id]);
-        return $recent_logins;
+        RecentLogin::removeUserFromCookie($recent->user->id);
+
+        return back()->with(['success','Recent Login is Deleted Successfully']);
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\RecentLogin;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use stdClass;
 
 class LoginController extends Controller
 {
@@ -57,12 +58,12 @@ class LoginController extends Controller
         foreach (RecentLogin::getRecentLoginsFromCookie() as $user_id=>$token) {
             $recent = RecentLogin::where('user_id', $user_id)->where('token', $token)->first();
             if ($recent && $recent->isValidToShow()) {
-                $logins[] = [
+                $logins[] = fill_object_from_array(new stdClass,[
                     'id'=>$recent->id,
                     'token'=>$recent->token,
                     'name'=>$recent->user->name,
                     'image_url'=>$recent->user->image_url
-                ];
+                ]);
             }
         }
         return $logins;

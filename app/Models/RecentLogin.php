@@ -9,21 +9,35 @@ use Illuminate\Support\Facades\Cookie;
 class RecentLogin extends Model
 {
     use HasFactory;
+    
+    public const COOKIE_KEY = 'recent_logins';
 
     protected $guarded = [];
     
     public static function getRecentLoginsFromCookie()
     {
-        return json_decode(Cookie::get('recent_logins'), true) ?? [];
+        return json_decode(Cookie::get(self::COOKIE_KEY), true) ?? [];
     }
     
     public static function setRecentLoginsToCookie(array $recentLogins)
     {
-        Cookie::queue(cookie()->forever('recent_logins', json_encode($recentLogins)));
+        Cookie::queue(cookie()->forever(self::COOKIE_KEY, json_encode($recentLogins)));
     }
 
-    public function isValidForLogin(){
-        if(!$this->isValidToShow()){
+    public static function removeUserFromCookie($user_id)
+    {
+        $recent_logins = self::getRecentLoginsFromCookie();
+        unset($recent_logins[$user_id]);
+        self::setRecentLoginsToCookie($recent_logins);
+    }
+
+    public function isValidForLogin()
+    {
+        if (!$this->isValidToShow()) {
+            return false;
+        }
+
+        if ($this->isConsumed()) {
             return false;
         }
 
@@ -35,7 +49,6 @@ class RecentLogin extends Model
             return false;
         }
 
-
         return true;
     }
 
@@ -45,11 +58,7 @@ class RecentLogin extends Model
             return false;
         }
 
-        if ($this->isConsumed()) {
-            return false;
-        }
-
-        if(!$this->user){
+        if (!$this->user) {
             return false;
         }
 
@@ -73,7 +82,8 @@ class RecentLogin extends Model
         }
     }
 
-    public function user(){
-        return $this->belongsTo(User::class,"user_id","id");
+    public function user()
+    {
+        return $this->belongsTo(User::class, "user_id", "id");
     }
 }

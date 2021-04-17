@@ -10,7 +10,7 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    
+
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -25,7 +25,7 @@
             cursor: pointer;
         }
 
-        .recent-login:hover .circle{
+        .recent-login:hover .circle {
             opacity: 1 !important;
             background: white !important;
             width: 25px !important;
@@ -33,12 +33,14 @@
             top: -4px !important;
             left: -4px !important;
         }
-        .recent-login:hover .icon{
+
+        .recent-login:hover .icon {
             top: -2px !important;
             left: 3px !important;
         }
-        .recent-login:hover .icon i{
-            color:rgba(0, 0, 0, 0.4) !important;
+
+        .recent-login:hover .icon i {
+            color: rgba(0, 0, 0, 0.4) !important;
             font-size: 1rem !important;
         }
     </style>
@@ -59,23 +61,30 @@
                                 <div class="row recent-container no-gutters">
                                     @foreach($recent_logins as $recent)
                                     <div class="col-md-4">
-                                        <form method="POST" action="" class="bg-white rounded recent-login mx-1" data-id="{{$recent['id']}}">
-                                            <input type="hidden" name="token" value="{{$recent['token']}}">
-                                            <div class="delete-account">
+                                        <form method="POST" action="" class="bg-white rounded recent-login mx-1"
+                                            data-id="{{$recent->id}}">
+                                            @csrf
+                                            <input type="hidden" name="token" value="{{$recent->token}}">
+                                            <div class="delete-recent-login"
+                                                onclick="$('form#delete-recent-login-{{$recent->id}}').submit()">
                                                 <div class="circle"
                                                     style="position: absolute;top:1px;left:1px;width:15px;height:15px;border-radius:50%;background:black;opacity:0.6;text-align:center;z-index:2;">
                                                 </div>
                                                 <div data-toggle="tooltip" data-placement="top"
-                                                    title="Remove Account From Recent Logins"
-                                                    class="icon"
+                                                    title="Remove Account From Recent Logins" class="icon"
                                                     style="position: absolute;top:-4px;left:4px;z-index:4">
                                                     <i class="fas fa-times" style="color:white;font-size:11px;"></i>
                                                 </div>
                                             </div>
-                                            <img src="{{$recent['image_url']}}" class="img-fluid rounded-top">
-                                            <p class="mb-0 p-2 text-center">{{$recent['name']}}</p>
+                                            <img src="{{$recent->image_url}}" class="img-fluid rounded-top">
+                                            <p class="mb-0 p-2 text-center">{{$recent->name}}</p>
                                         </form>
                                     </div>
+                                    <form action="{{route('recent-logins.delete',$recent->id)}}" method="POST" id="delete-recent-login-{{$recent->id}}">
+                                        @csrf
+                                        <input type="hidden" name="id" value="{{$recent->id}}">
+                                        <input type="hidden" name="token" value="{{$recent->token}}">
+                                    </form>
                                     @endforeach
                                 </div>
                             </div>
@@ -91,17 +100,6 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
-    
-    <script>
-        $(".delete-account").on('click',function(){
-            let recent_id_clicked = $(event.target).parents('.recent-login').data('id');
-            axios.post(`/api/recent-logins-cookie/${recent_id_clicked}/delete`,{withCredentials: true}).then(function(response){
-                if(response.data.success){
-                    location.reload();
-                }
-            })
-        })
-    </script>
 
     @yield('js')
 

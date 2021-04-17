@@ -31,7 +31,7 @@ class AddUserToRecentLogins
 
         $recent = RecentLogin::create([
             'user_id'=>$event->user->id,
-            'token'=>\Illuminate\Support\Str::random(40),
+            'token'=>\Illuminate\Support\Str::random(60),
             'ip'=>  request()->server('REMOTE_ADDR'),
             'fingerprint'=>request('fingerprint'),
             'user_agent'=>request('user_agent'),
