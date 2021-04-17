@@ -7,7 +7,7 @@
             @csrf
             <div class="form-group">
                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email"
-                    value="{{ old('email') }}" required autocomplete="email" autofocus
+                    value="{{ old('email') ?: request('email') }}" required autocomplete="email" autofocus
                     placeholder="{{ __('E-Mail Address') }}">
 
                 @error('email')

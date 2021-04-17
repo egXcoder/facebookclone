@@ -11,13 +11,19 @@ class RecentLoginController extends Controller
 {
     public function login(RecentLogin $recent)
     {
-        if ($recent->isValidToLogin() && $recent->token == request('token')) {
-            Auth::guard()->login($recent->user, true);
-            $new_recent = $recent->consumeAndGenerateNewInstance();
-            RecentLogin::AddNewRecentLoginToCookie($new_recent);
-            request()->session()->regenerate();
-            return redirect()->intended(RouteServiceProvider::HOME);
+        if ($recent->token == request('token')) {
+            if($recent->isValidToLogin()){
+                Auth::guard()->login($recent->user, true);
+                $new_recent = $recent->consumeAndGenerateNewInstance();
+                RecentLogin::AddNewRecentLoginToCookie($new_recent);
+                request()->session()->regenerate();
+                return redirect()->intended(RouteServiceProvider::HOME);
+            }
+
+            return redirect()->to("/login?email={$recent->user->email}");
         }
+
+        return back()->with(['error'=>'Recent Login is not valid']);
     }
 
     public function delete(RecentLogin $recent)
