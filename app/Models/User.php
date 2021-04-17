@@ -20,6 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'image_url',
+        'api_token'
     ];
 
     /**

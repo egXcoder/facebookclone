@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\RecentLogin;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -41,6 +42,18 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+     /**
+     * Show the application registration form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showRegistrationForm()
+    {
+        return view('auth.register',[
+            'recent_logins' => RecentLogin::buildRecentLoginsFromCookie()
+        ]);
+    }
+
     /**
      * Get a validator for an incoming registration request.
      *
@@ -68,6 +81,7 @@ class RegisterController extends Controller
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'image_url'=> asset('storage/profiles/default.jpg')
         ]);
     }
 }

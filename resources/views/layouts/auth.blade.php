@@ -66,7 +66,7 @@
                                             @csrf
                                             <input type="hidden" name="token" value="{{$recent->token}}">
                                             <div class="delete-recent-login"
-                                                onclick="event.stopPropagation();('form#delete-recent-login-{{$recent->id}}').submit()">
+                                                onclick="event.stopPropagation();$('form#delete-recent-login-{{$recent->id}}').submit()">
                                                 <div class="circle"
                                                     style="position: absolute;top:1px;left:1px;width:15px;height:15px;border-radius:50%;background:black;opacity:0.6;text-align:center;z-index:2;">
                                                 </div>
@@ -109,8 +109,8 @@
         let user_agent = client.getUserAgent();
         let fingerprint_element = "<input type='hidden' name='fingerprint' value='"+fingerprint+"'>";
         let user_agent_element = "<input type='hidden' name='user_agent' value='"+user_agent+"'>";
-        $("form#login,form.recent-login").prepend(fingerprint_element);
-        $("form#login,form.recent-login").prepend(user_agent_element);
+        $("form#login,form#register,form.recent-login").prepend(fingerprint_element);
+        $("form#login,form#register,form.recent-login").prepend(user_agent_element);
     </script>
 
     @yield('js')

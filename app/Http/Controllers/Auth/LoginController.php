@@ -48,24 +48,9 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         return view('auth.login', [
-            'recent_logins' => $this->buildRecentLogins()
+            'recent_logins' => RecentLogin::buildRecentLoginsFromCookie()
         ]);
     }
         
-    protected function buildRecentLogins()
-    {
-        $logins = [];
-        foreach (RecentLogin::getRecentLoginsFromCookie() as $user_id=>$token) {
-            $recent = RecentLogin::where('user_id', $user_id)->where('token', $token)->first();
-            if ($recent && $recent->isValidToShow()) {
-                $logins[] = fill_object_from_array(new stdClass,[
-                    'id'=>$recent->id,
-                    'token'=>$recent->token,
-                    'name'=>$recent->user->name,
-                    'image_url'=>$recent->user->image_url
-                ]);
-            }
-        }
-        return $logins;
-    }
+    
 }

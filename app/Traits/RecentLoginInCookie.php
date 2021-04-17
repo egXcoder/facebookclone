@@ -4,6 +4,7 @@ namespace App\Traits;
 
 use App\Models\RecentLogin;
 use Illuminate\Support\Facades\Cookie;
+use stdClass;
 
 trait RecentLoginInCookie
 {
@@ -31,5 +32,22 @@ trait RecentLoginInCookie
         $recent_logins = self::getRecentLoginsFromCookie();
         unset($recent_logins[$user_id]);
         self::setRecentLoginsToCookie($recent_logins);
+    }
+
+    public static function buildRecentLoginsFromCookie()
+    {
+        $logins = [];
+        foreach (self::getRecentLoginsFromCookie() as $user_id=>$token) {
+            $recent = self::where('user_id', $user_id)->where('token', $token)->first();
+            if ($recent && $recent->isValidToShow()) {
+                $logins[] = fill_object_from_array(new stdClass,[
+                    'id'=>$recent->id,
+                    'token'=>$recent->token,
+                    'name'=>$recent->user->name,
+                    'image_url'=>$recent->user->image_url
+                ]);
+            }
+        }
+        return $logins;
     }
 }

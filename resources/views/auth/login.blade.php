@@ -46,7 +46,7 @@
             <hr class="my-3">
 
             <div class="d-flex justify-content-center">
-                <a href="" class="btn btn-success">Create New Account</a>
+                <a href="{{route('register')}}" class="btn btn-success">Create New Account</a>
             </div>
         </form>
     </div>
@@ -54,12 +54,5 @@
 @endsection
 
 @section('js')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ClientJS/0.1.11/client.min.js"></script>
-<script>
-    let client = new ClientJS();
-    let fingerprint = client.getCustomFingerprint(client.getOS(),client.getOSVersion(),client.getCPU(),client.getScreenPrint());
-    let user_agent = client.getUserAgent();
-    $("form#login").prepend("<input type='hidden' name='fingerprint' value='"+fingerprint+"'>");
-    $("form#login").prepend("<input type='hidden' name='user_agent' value='"+user_agent+"'>");
-</script>
+
 @endsection
