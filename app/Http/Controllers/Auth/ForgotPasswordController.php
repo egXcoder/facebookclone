@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\RecentLogin;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 
 class ForgotPasswordController extends Controller
@@ -19,4 +20,14 @@ class ForgotPasswordController extends Controller
     */
 
     use SendsPasswordResetEmails;
+
+    /**
+     * Display the form to request a password reset link.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showLinkRequestForm()
+    {
+        return view('auth.passwords.email',['recent_logins'=>RecentLogin::buildRecentLoginsFromCookie()]);
+    }
 }
