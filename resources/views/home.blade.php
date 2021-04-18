@@ -57,6 +57,10 @@
                 </div>
             </header>
             <div style="position: relative;top:100px;">
+                <form action="{{route('logout')}}" method="post">
+                    @csrf
+                    <button class="btn btn-primary">Logout</button>
+                </form>
                 <router-view></router-view>
             </div>
         </div>

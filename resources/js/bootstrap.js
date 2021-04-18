@@ -1,5 +1,7 @@
 window._ = require('lodash');
 
+require('./helpers');
+
 /**
  * We'll load jQuery and the Bootstrap jQuery plugin which provides support
  * for JavaScript based Bootstrap features such as modals and tabs. This
@@ -20,8 +22,8 @@ try {
  */
 
 window.axios = require('axios');
-
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + window.getCookie('api_token');
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

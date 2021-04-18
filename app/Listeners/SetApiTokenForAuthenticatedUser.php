@@ -38,7 +38,7 @@ class SetApiTokenForAuthenticatedUser
             'api_token'=>$token
         ]);
 
-        Cookie::queue(cookie()->forever('api_token', $token));
+        Cookie::queue(cookie()->forever('api_token', $token)->withHttpOnly(false));
     }
     
     protected function generateUniqueToken()

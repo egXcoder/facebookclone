@@ -1,16 +1,42 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
-
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="home-screen row">
+        <aside class="left d-flex flex-column col-md-3">
+            <router-link to="/xx">
+                <img :src="$store.state.user.me.image_url" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                {{$store.state.user.me.name}}
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/covid.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                COVID-19 Information Center
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/friends.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                Friends
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/groups.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                Groups
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/market.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                Marketplace
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/recent.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                Most Recent
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/events.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                Events
+            </router-link>
+            <router-link to="/xx">
+                <img src="/images/favorites.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
+                Favorites
+            </router-link>
+            <hr>
+        </aside>
+        <aside class="middle"></aside>
+        <aside class="right"></aside>
     </div>
 </template>
 
@@ -21,3 +47,22 @@
         }
     }
 </script>
+
+<style lang="scss" scoped>
+    .home-screen{
+        aside.left{
+            a{
+                text-decoration: none;
+                color:black;
+                padding-top:5px;
+                padding-bottom:5px;
+                transition: all .2s;
+                &:hover{
+                    background: #efefef;
+                    border-top-left-radius: 1rem;
+                    border-bottom-left-radius: 1rem;
+                }
+            }
+        }
+    }
+</style>

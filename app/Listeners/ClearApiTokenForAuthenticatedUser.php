@@ -35,6 +35,6 @@ class ClearApiTokenForAuthenticatedUser
             'api_token'=>null
         ]);
 
-        Cookie::queue(cookie()->forget('api_token'));
+        Cookie::queue(cookie()->forget('api_token')->withHttpOnly(false));
     }
 }
