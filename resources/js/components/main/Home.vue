@@ -1,68 +1,30 @@
 <template>
-    <div class="home-screen row">
-        <aside class="left d-flex flex-column col-md-3">
-            <router-link to="/xx">
-                <img :src="$store.state.user.me.image_url" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                {{$store.state.user.me.name}}
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/covid.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                COVID-19 Information Center
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/friends.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                Friends
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/groups.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                Groups
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/market.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                Marketplace
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/recent.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                Most Recent
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/events.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                Events
-            </router-link>
-            <router-link to="/xx">
-                <img src="/images/favorites.png" class="img-fluid rounded-circle mx-2" style="height:30px" >
-                Favorites
-            </router-link>
-            <hr>
-        </aside>
-        <aside class="middle"></aside>
-        <aside class="right"></aside>
-    </div>
+  <div class="home-screen row">
+    <aside class="left d-flex flex-column col-md-3">
+      <categories></categories>
+      <hr class="w-100" />
+      <shortcuts></shortcuts>
+    </aside>
+    <aside class="middle"></aside>
+    <aside class="right"></aside>
+  </div>
 </template>
 
 <script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
-    }
+import Categories from "../widgets/Categories.vue";
+import Shortcuts from "./../widgets/Shortcuts";
+export default {
+  components: {
+    Shortcuts,
+    Categories,
+  },
+  mounted() {
+    console.log("Component mounted.");
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-    .home-screen{
-        aside.left{
-            a{
-                text-decoration: none;
-                color:black;
-                padding-top:5px;
-                padding-bottom:5px;
-                transition: all .2s;
-                &:hover{
-                    background: #efefef;
-                    border-top-left-radius: 1rem;
-                    border-bottom-left-radius: 1rem;
-                }
-            }
-        }
-    }
+.home-screen {
+}
 </style>

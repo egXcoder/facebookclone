@@ -56,12 +56,12 @@
                     </div>
                 </div>
             </header>
-            <div style="position: relative;top:100px;">
+            <div style="position: relative;top:80px;">
+                <router-view></router-view>
                 <form action="{{route('logout')}}" method="post">
                     @csrf
                     <button class="btn btn-primary">Logout</button>
                 </form>
-                <router-view></router-view>
             </div>
         </div>
     </div>
