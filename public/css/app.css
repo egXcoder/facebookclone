@@ -15551,4 +15551,118 @@ a.text-dark:focus {
   }
 }
 
+header.top-bar .left-side img {
+  height: 50px;
+}
+
+header.top-bar .left-side .search-container {
+  position: relative;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+header.top-bar .left-side .search-container .search-icon {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+}
+
+header.top-bar .left-side .search-container .search-icon i {
+  color: #505050;
+}
+
+@media screen and (max-width: 1200px) {
+  header.top-bar .left-side .search-container .search-icon {
+    position: static;
+    padding: 7px;
+    background-color: #f2f5fb;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+header.top-bar .left-side .search-container input {
+  border-radius: 2rem;
+  padding-left: 2rem;
+  background: #f2f5fb;
+  border: none;
+}
+
+@media screen and (max-width: 1200px) {
+  header.top-bar .left-side .search-container input {
+    display: none;
+  }
+}
+
+header.top-bar .middle a {
+  font-size: 1.3rem;
+  color: #505050;
+  padding: 0.3rem;
+}
+
+header.top-bar .middle a:hover {
+  background-color: #f2f5fb;
+  border-radius: 10px;
+}
+
+header.top-bar .middle .router-link-active {
+  border-bottom: 2px solid #1877f2;
+}
+
+header.top-bar .middle .router-link-active:hover {
+  background-color: transparent;
+  border-radius: 0px;
+}
+
+header.top-bar .middle .router-link-active i {
+  color: #1877f2 !important;
+}
+
+header.top-bar .right-side .profile {
+  border-radius: 1rem;
+  padding: 2px 9px 2px 4px;
+  cursor: pointer;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+header.top-bar .right-side .profile img {
+  height: 30px;
+}
+
+header.top-bar .right-side .profile:hover {
+  background: #eee;
+}
+
+@media screen and (max-width: 1200px) {
+  header.top-bar .right-side .profile {
+    display: none;
+  }
+}
+
+header.top-bar .right-side .icon {
+  background: #e4e6eb;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 3px;
+  margin-right: 3px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+header.top-bar .right-side .icon i {
+  font-size: 1.1rem;
+}
+
+header.top-bar .right-side .icon:hover {
+  background: #dddee0;
+}
+
 

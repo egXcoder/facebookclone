@@ -47,7 +47,7 @@
 </head>
 
 <body>
-    <div id="app">
+    <div>
         <div class="container-fluid p-4">
             <div class="row justify-content-center">
                 <div class="col-md-10">

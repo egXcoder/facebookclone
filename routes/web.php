@@ -13,15 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// Route::post('/login-of-recent-login',)
-
 Auth::routes();
 
 Route::post('recent-logins/{recent}/delete','\App\Http\Controllers\RecentLoginController@delete')->name('recent-logins.delete');
 Route::post('recent-logins/{recent}/login','\App\Http\Controllers\RecentLoginController@login')->name('recent-logins.login');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->where('any','.*');

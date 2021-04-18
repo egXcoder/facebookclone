@@ -1,0 +1,103 @@
+header.top-bar {
+    .left-side {
+        img {
+            height: 50px;
+        }
+        .search-container {
+            position: relative;
+            margin-top: auto;
+            margin-bottom: auto;
+            .search-icon {
+                position: absolute;
+                top: 8px;
+                left: 12px;
+                i {
+                    color: #505050;
+                }
+
+                @media screen and (max-width: 1200px) {
+                    position: static;
+                    padding: 7px;
+                    background-color: #f2f5fb;
+                    border-radius: 50%;
+                    width: 40px;
+                    height: 40px;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                }
+            }
+            input {
+                border-radius: 2rem;
+                padding-left: 2rem;
+                background: #f2f5fb;
+                border: none;
+                @media screen and (max-width: 1200px) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    .middle {
+        a {
+            font-size: 1.3rem;
+            color: #505050;
+            padding: 0.3rem;
+            &:hover {
+                background-color: #f2f5fb;
+                border-radius: 10px;
+            }
+        }
+        .router-link-active {
+            border-bottom: 2px solid #1877f2;
+            &:hover {
+                background-color: transparent;
+                border-radius: 0px;
+            }
+        }
+
+        .router-link-active i {
+            color: #1877f2 !important;
+        }
+    }
+
+    .right-side {
+        .profile {
+            border-radius: 1rem;
+            padding: 2px 9px 2px 4px;
+            cursor: pointer;
+            margin-top: auto;
+            margin-bottom: auto;
+            img {
+                height: 30px;
+            }
+            &:hover {
+                background: #eee;
+            }
+
+            @media screen and (max-width: 1200px) {
+                display: none;
+            }
+        }
+
+        .icon {
+            background: #e4e6eb;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 3px;
+            margin-right: 3px;
+            border-radius: 50%;
+            cursor: pointer;
+            i {
+                font-size: 1.1rem;
+            }
+            &:hover {
+                background: #dddee0;
+            }
+        }
+    }
+}
