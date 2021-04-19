@@ -9,8 +9,9 @@ require('./bootstrap');
 import Vue from 'vue';
 import router from './router';
 import store from './store';
-import Initializer from './initializer';
 import initializer from './initializer';
+
+require('./filters');
 
 /**
  * The following block of code may be used to automatically register your
@@ -30,12 +31,11 @@ import initializer from './initializer';
  * the page. Then, you may begin adding components to this application
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
-
 const app = new Vue({
     el: '#app',
     router,
     store,
-    created(){
+    created() {
         initializer.initStore();
     }
 });
