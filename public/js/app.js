@@ -2161,7 +2161,7 @@ __webpack_require__.r(__webpack_exports__);
     },
     isSliderAtEnd: function isSliderAtEnd() {
       var maxScrollableWidth = this.$refs.themes.scrollWidth - this.$refs.themes.offsetWidth;
-      return this.currentTranslateValue + maxScrollableWidth < 0;
+      return this.currentTranslateValue + maxScrollableWidth <= 0;
     }
   }
 });
@@ -7011,7 +7011,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".add-post-component .add-post {\n  background: white;\n  border-radius: 1rem;\n  padding: 0.8rem;\n}\n.add-post-component .add-post .onmind img {\n  height: 40px;\n  border-radius: 50%;\n  margin-left: 0.5rem;\n  margin-right: 0.5rem;\n  cursor: pointer;\n}\n.add-post-component .add-post .onmind img:hover {\n  background: gray;\n}\n.add-post-component .add-post .onmind p {\n  background: #f0f2f5;\n  border-radius: 1rem;\n  padding: 0.7rem 0.4rem;\n  cursor: pointer;\n  margin-bottom: 0px;\n}\n.add-post-component .add-post .onmind p:hover {\n  background: #dce1e7;\n}\n.add-post-component .add-post .extra-actions .feeling-activity {\n  padding: 0.1rem 0.5rem;\n  border-radius: 1rem;\n  cursor: pointer;\n  color: #606770;\n  font-weight: bold;\n}\n.add-post-component .add-post .extra-actions .feeling-activity:hover {\n  background: #f0f2f5;\n}\n.add-post-component .add-post .extra-actions .feeling-activity .icon {\n  vertical-align: middle;\n  font-size: 1.6rem;\n  color: #f8c64e;\n}\n.add-post-component .modal .modal-content {\n  border: none;\n}\n.add-post-component .modal .modal-content .theme {\n  color: #65676b;\n}\n.add-post-component .modal .modal-content .theme .text {\n  height: 150px;\n  outline: none;\n  overflow-y: auto;\n  font-size: 1.7rem;\n}\n.add-post-component .modal .modal-content .theme .text[contenteditable=true]:empty:before {\n  content: attr(data-placeholder);\n  font-weight: bold;\n  letter-spacing: 1px;\n}\n.add-post-component .modal .modal-content .emoji > span {\n  font-size: 1.7rem;\n}\n.add-post-component .modal .modal-content .emoji span {\n  cursor: pointer;\n}\n.add-post-component .modal .close {\n  background: #e4e6eb;\n  border-radius: 50%;\n  width: 35px;\n  height: 35px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  color: #2b2e31;\n  font-size: 1.9rem;\n  margin-left: 3px;\n  margin-right: 3px;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".add-post-component .add-post {\n  background: white;\n  border-radius: 1rem;\n  padding: 0.8rem;\n}\n.add-post-component .add-post .onmind img {\n  height: 40px;\n  border-radius: 50%;\n  margin-left: 0.5rem;\n  margin-right: 0.5rem;\n  cursor: pointer;\n}\n.add-post-component .add-post .onmind img:hover {\n  background: gray;\n}\n.add-post-component .add-post .onmind p {\n  background: #f0f2f5;\n  border-radius: 1rem;\n  padding: 0.7rem 0.4rem;\n  cursor: pointer;\n  margin-bottom: 0px;\n}\n.add-post-component .add-post .onmind p:hover {\n  background: #dce1e7;\n}\n.add-post-component .add-post .extra-actions .feeling-activity {\n  padding: 0.1rem 0.5rem;\n  border-radius: 1rem;\n  cursor: pointer;\n  color: #606770;\n  font-weight: bold;\n}\n.add-post-component .add-post .extra-actions .feeling-activity:hover {\n  background: #f0f2f5;\n}\n.add-post-component .add-post .extra-actions .feeling-activity .icon {\n  vertical-align: middle;\n  font-size: 1.6rem;\n  color: #f8c64e;\n}\n.add-post-component .modal .modal-content {\n  border: none;\n}\n.add-post-component .modal .modal-content .post-editor {\n  height: 300px;\n  overflow-x: hidden;\n  overflow-y: auto;\n}\n.add-post-component .modal .modal-content .post-editor::-webkit-scrollbar {\n  width: 5px;\n}\n.add-post-component .modal .modal-content .post-editor::-webkit-scrollbar-track {\n  background: #f1f1f1;\n}\n.add-post-component .modal .modal-content .post-editor::-webkit-scrollbar-thumb {\n  background: #888;\n}\n.add-post-component .modal .modal-content .post-editor::-webkit-scrollbar-thumb:hover {\n  background: #555;\n}\n.add-post-component .modal .modal-content .post-editor .theme {\n  color: #65676b;\n}\n.add-post-component .modal .modal-content .post-editor .theme .text {\n  height: 150px;\n  outline: none;\n  overflow-y: auto;\n  font-size: 1.7rem;\n}\n.add-post-component .modal .modal-content .post-editor .theme .text[contenteditable=true]:empty:before {\n  content: attr(data-placeholder);\n  font-weight: bold;\n  letter-spacing: 1px;\n}\n.add-post-component .modal .modal-content .emoji > span {\n  font-size: 1.7rem;\n}\n.add-post-component .modal .modal-content .emoji span {\n  cursor: pointer;\n}\n.add-post-component .modal .close {\n  background: #e4e6eb;\n  border-radius: 50%;\n  width: 35px;\n  height: 35px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  color: #2b2e31;\n  font-size: 1.9rem;\n  margin-left: 3px;\n  margin-right: 3px;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -44444,32 +44444,22 @@ var render = function() {
             _vm._m(1),
             _vm._v(" "),
             _c("div", { staticClass: "modal-body p-0" }, [
-              _c(
-                "div",
-                {
-                  staticStyle: {
-                    height: "300px",
-                    "overflow-x": "hidden",
-                    "overflow-y": "auto"
-                  }
-                },
-                [
-                  _c(
-                    "div",
-                    { staticClass: "theme p-2 w-100", style: _vm.theme },
-                    [
-                      _c("div", {
-                        ref: "text",
-                        staticClass: "text",
-                        attrs: {
-                          contenteditable: "true",
-                          "data-placeholder": _vm.welcome_question
-                        }
-                      })
-                    ]
-                  )
-                ]
-              ),
+              _c("div", { staticClass: "post-editor" }, [
+                _c(
+                  "div",
+                  { staticClass: "theme p-2 w-100", style: _vm.theme },
+                  [
+                    _c("div", {
+                      ref: "text",
+                      staticClass: "text",
+                      attrs: {
+                        contenteditable: "true",
+                        "data-placeholder": _vm.welcome_question
+                      }
+                    })
+                  ]
+                )
+              ]),
               _vm._v(" "),
               _c(
                 "div",

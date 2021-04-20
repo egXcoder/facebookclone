@@ -97,7 +97,7 @@ export default {
     },
     isSliderAtEnd(){
       let maxScrollableWidth = this.$refs.themes.scrollWidth - this.$refs.themes.offsetWidth;
-      return (this.currentTranslateValue + maxScrollableWidth) < 0;
+      return (this.currentTranslateValue + maxScrollableWidth) <= 0;
     }
   },
 };

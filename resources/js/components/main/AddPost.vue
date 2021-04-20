@@ -32,7 +32,7 @@
             </button>
           </div>
           <div class="modal-body p-0">
-            <div style="height: 300px; overflow-x: hidden; overflow-y: auto">
+            <div class="post-editor">
               <div class="theme p-2 w-100" :style="theme">
                 <div
                   ref="text"
@@ -201,17 +201,37 @@ export default {
   .modal {
     .modal-content {
       border: none;
-      .theme {
-        color: #65676b;
-        .text {
-          height: 150px;
-          outline: none;
-          overflow-y: auto;
-          font-size: 1.7rem;
-          &[contenteditable="true"]:empty:before {
-            content: attr(data-placeholder);
-            font-weight: bold;
-            letter-spacing: 1px;
+      .post-editor {
+        height: 300px;
+        overflow-x: hidden;
+        overflow-y: auto;
+        &::-webkit-scrollbar {
+          width: 5px;
+        }
+
+        &::-webkit-scrollbar-track {
+          background: #f1f1f1;
+        }
+
+        &::-webkit-scrollbar-thumb {
+          background: #888;
+        }
+
+        &::-webkit-scrollbar-thumb:hover {
+          background: #555;
+        }
+        .theme {
+          color: #65676b;
+          .text {
+            height: 150px;
+            outline: none;
+            overflow-y: auto;
+            font-size: 1.7rem;
+            &[contenteditable="true"]:empty:before {
+              content: attr(data-placeholder);
+              font-weight: bold;
+              letter-spacing: 1px;
+            }
           }
         }
       }
