@@ -38,7 +38,7 @@
                 class="rounded-circle"
               />
               <div>
-                <p class="mb-0">{{ $store.state.user.me.name | capitalize }}</p>
+                <p class="mb-0">{{ $store.state.user.me.name | capitalize }} <span v-if="feeling">{{`is ${feeling.icon} feeling ${feeling.name}`}}</span></p>
                 <select v-model="audience_type">
                   <option value="public">Public</option>
                   <option value="friends">Friends</option>
@@ -64,7 +64,7 @@
                   v-show="!pick_theme"
                   src="/images/SATP_Aa_square-2x.png"
                   class="img-fluid"
-                  style="height: 50px; cursor: pointer"
+                  style="height: 32px; cursor: pointer"
                   @click="pick_theme = !pick_theme"
                 />
                 <theme-picker
@@ -89,6 +89,19 @@
                 /></span>
               </div>
             </div>
+            <div class="add-to-your-post">
+              <div class="row align-items-center">
+                <div class="col-md-4 font-weight-bold">Add To your Post</div>
+                <div class="col-md-8 d-flex actions">
+                  <div
+                    class="feeling-activity"
+                    @click="showFeelingActivityModal()"
+                  >
+                    <span class="icon mx-1"><i class="far fa-grin" /></span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary">Save changes</button>
@@ -103,17 +116,25 @@
         </div>
       </div>
     </div>
+
+    <feeling-activity-modal
+      @select="feeling = $event;hideFeelingActivityModal()"
+      @hide="hideFeelingActivityModal"
+      ref="feeling_activity_modal"
+    />
   </div>
 </template>
 
 <script>
 import { Picker } from "emoji-mart-vue";
 import ThemePicker from "./ThemePicker";
+import FeelingActivityModal from "./FeelingActivityModal";
 
 export default {
   components: {
     Picker,
     ThemePicker,
+    FeelingActivityModal,
   },
   data() {
     return {
@@ -121,7 +142,8 @@ export default {
       pick_theme: false,
       text: "",
       theme: {},
-      audience_type:'public',
+      feeling:{},
+      audience_type: "public",
     };
   },
   computed: {
@@ -160,6 +182,14 @@ export default {
     },
     removeClickEventListenerOnRootDiv() {
       this.$refs.add_post_component.removeEventListener("click");
+    },
+    showFeelingActivityModal() {
+      window.$(this.$refs.feeling_activity_modal.$el).modal("show");
+      window.$(this.$refs.modal).modal("hide");
+    },
+    hideFeelingActivityModal() {
+      window.$(this.$refs.feeling_activity_modal.$el).modal("hide");
+      window.$(this.$refs.modal).modal("show");
     },
   },
 };
@@ -236,7 +266,7 @@ export default {
         }
       }
       .post-editor {
-        height: 300px;
+        height: 180px;
         overflow-x: hidden;
         overflow-y: auto;
         &::-webkit-scrollbar {
@@ -271,10 +301,27 @@ export default {
       }
       .emoji {
         > span {
-          font-size: 1.7rem;
+          font-size: 1.5rem;
         }
         span {
           cursor: pointer;
+        }
+      }
+      .add-to-your-post {
+        margin: 1rem;
+        padding: 1rem;
+        border: 1px solid #eee;
+        border-radius: 7px;
+        .actions {
+          .feeling-activity {
+            vertical-align: middle;
+            font-size: 1.6rem;
+            color: #f8c64e;
+            cursor: pointer;
+            &:hover {
+              color: #ecb73a;
+            }
+          }
         }
       }
     }

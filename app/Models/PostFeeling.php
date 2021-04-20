@@ -9,7 +9,8 @@ class PostFeeling extends Model
 {
     use HasFactory;
 
-    public function posts(){
-        return $this->morphMany(Post::class,"doingable");
+    public function posts()
+    {
+        return $this->morphMany(Post::class, "doingable");
     }
 }

@@ -15,7 +15,7 @@ class CreatePostFeelingsTable extends Migration
     {
         Schema::create('post_feelings', function (Blueprint $table) {
             $table->id();
-            $table->string('unicode');
+            $table->string('icon');
             $table->string('name');
             $table->timestamps();
         });
