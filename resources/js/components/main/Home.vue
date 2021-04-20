@@ -1,18 +1,18 @@
 <template>
   <div class="home-screen row">
     <aside class="left d-flex flex-column col-md-3">
-      <categories></categories>
-      <hr class="w-100" />
-      <shortcuts></shortcuts>
+      <categories />
+      <hr class="w-100">
+      <shortcuts />
     </aside>
     <main class="middle col-md-6">
       <div class="row justify-content-center">
         <div class="col-md-10">
-          <add-post></add-post>
+          <add-post />
         </div>
       </div>
     </main>
-    <aside class="right"></aside>
+    <aside class="right" />
   </div>
 </template>
 
