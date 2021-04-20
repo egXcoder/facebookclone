@@ -12,17 +12,35 @@
         </div>
         <div class="modal-body p-0">
           <div class="d-flex">
-            <p :class="{ active: toShow == 'feeling' }" class="button-to-show">
+            <p
+              :class="{ active: toShow == 'feeling' }"
+              @click="toShow = 'feeling'"
+              class="button-to-show"
+            >
               Feeling
             </p>
-            <p :class="{ active: toShow == 'activity' }" class="button-to-show">
+            <p
+              :class="{ active: toShow == 'activity' }"
+              @click="toShow = 'activity'"
+              class="button-to-show"
+            >
               Activity
             </p>
           </div>
 
-          <template v-if="(toShow = 'feeling')">
+          <template v-if="toShow == 'feeling'">
+            <div class="search">
+              <i class="fas fa-search mx-2"></i>
+              <input
+                type="search"
+                v-model="search_feelings"
+                class="flex-grow-1"
+                placeholder="Search ..."
+              />
+            </div>
+            <hr>
             <div class="row no-gutters p-2 feeling-section">
-              <template v-for="(feeling, index) in feelings">
+              <template v-for="(feeling, index) in filtered_feelings">
                 <div
                   class="col-md-6"
                   @click="$emit('select', feeling)"
@@ -36,7 +54,8 @@
               </template>
             </div>
           </template>
-          <template v-else-if="(toShow = 'activity')">
+
+          <template v-else-if="toShow == 'activity'">
             <div></div>
           </template>
         </div>
@@ -58,7 +77,23 @@ export default {
       toShow: "feeling",
       feelings: [],
       activities: [],
+      search_feelings: "",
     };
+  },
+  computed: {
+    filtered_feelings() {
+      if (!this.search_feelings.length) {
+        return this.feelings;
+      }
+
+      let computed_feelings = [];
+      for (let feeling of this.feelings) {
+        if (feeling.name.includes(this.search_feelings)) {
+          computed_feelings.push(feeling);
+        }
+      }
+      return computed_feelings;
+    },
   },
   created() {
     this.fetchFeelings();
@@ -92,6 +127,19 @@ export default {
   &.active {
     color: hsl(214deg 89% 52%);
     border-bottom: 2px solid hsl(214deg 89% 52%);
+  }
+}
+.search {
+  display: flex;
+  background: #eee;
+  margin: 1rem;
+  padding: 0.3rem;
+  border-radius: 7px;
+  align-items: center;
+  input {
+    border: none;
+    outline: none;
+    background: #eee;
   }
 }
 .feeling-section {

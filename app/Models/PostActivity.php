@@ -9,6 +9,11 @@ class PostActivity extends Model
 {
     use HasFactory;
 
+    public function children()
+    {
+        return $this->hasMany(self::class,"parent_id","id");
+    }
+
     public function posts()
     {
         return $this->morphMany(Post::class, 'doingable');

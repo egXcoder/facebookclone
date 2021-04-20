@@ -8,6 +8,7 @@ class PostActivityController extends Controller
 {
     public function fetch()
     {
-        return response()->json(PostActivity::all());
+        $activities = PostActivity::whereNull('parent_id')->with('children')->get();
+        return response()->json($activities);
     }
 }

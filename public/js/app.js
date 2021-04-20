@@ -2058,6 +2058,31 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+function _createForOfIteratorHelper(o, allowArrayLike) { var it; if (typeof Symbol === "undefined" || o[Symbol.iterator] == null) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = o[Symbol.iterator](); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2116,8 +2141,37 @@ __webpack_require__.r(__webpack_exports__);
     return {
       toShow: "feeling",
       feelings: [],
-      activities: []
+      activities: [],
+      search_feelings: ""
     };
+  },
+  computed: {
+    filtered_feelings: function filtered_feelings() {
+      if (!this.search_feelings.length) {
+        return this.feelings;
+      }
+
+      var computed_feelings = [];
+
+      var _iterator = _createForOfIteratorHelper(this.feelings),
+          _step;
+
+      try {
+        for (_iterator.s(); !(_step = _iterator.n()).done;) {
+          var feeling = _step.value;
+
+          if (feeling.name.includes(this.search_feelings)) {
+            computed_feelings.push(feeling);
+          }
+        }
+      } catch (err) {
+        _iterator.e(err);
+      } finally {
+        _iterator.f();
+      }
+
+      return computed_feelings;
+    }
   },
   created: function created() {
     this.fetchFeelings();
@@ -7177,7 +7231,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".button-to-show[data-v-37103cbd] {\n  background: white;\n  padding: 1rem;\n  margin: 0.5rem;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.button-to-show[data-v-37103cbd]:hover {\n  background: #eee;\n}\n.button-to-show.active[data-v-37103cbd] {\n  color: #1876f2;\n  border-bottom: 2px solid #1876f2;\n}\n.feeling-section .single-feeling[data-v-37103cbd] {\n  cursor: pointer;\n}\n.feeling-section .single-feeling[data-v-37103cbd]:hover {\n  background: #eee;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".button-to-show[data-v-37103cbd] {\n  background: white;\n  padding: 1rem;\n  margin: 0.5rem;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.button-to-show[data-v-37103cbd]:hover {\n  background: #eee;\n}\n.button-to-show.active[data-v-37103cbd] {\n  color: #1876f2;\n  border-bottom: 2px solid #1876f2;\n}\n.search[data-v-37103cbd] {\n  display: flex;\n  background: #eee;\n  margin: 1rem;\n  padding: 0.3rem;\n  border-radius: 7px;\n  align-items: center;\n}\n.search input[data-v-37103cbd] {\n  border: none;\n  outline: none;\n  background: #eee;\n}\n.feeling-section .single-feeling[data-v-37103cbd] {\n  cursor: pointer;\n}\n.feeling-section .single-feeling[data-v-37103cbd]:hover {\n  background: #eee;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -45053,7 +45107,12 @@ var render = function() {
                 "p",
                 {
                   staticClass: "button-to-show",
-                  class: { active: _vm.toShow == "feeling" }
+                  class: { active: _vm.toShow == "feeling" },
+                  on: {
+                    click: function($event) {
+                      _vm.toShow = "feeling"
+                    }
+                  }
                 },
                 [_vm._v("\n            Feeling\n          ")]
               ),
@@ -45062,19 +45121,52 @@ var render = function() {
                 "p",
                 {
                   staticClass: "button-to-show",
-                  class: { active: _vm.toShow == "activity" }
+                  class: { active: _vm.toShow == "activity" },
+                  on: {
+                    click: function($event) {
+                      _vm.toShow = "activity"
+                    }
+                  }
                 },
                 [_vm._v("\n            Activity\n          ")]
               )
             ]),
             _vm._v(" "),
-            (_vm.toShow = "feeling")
+            _vm.toShow == "feeling"
               ? [
+                  _c("div", { staticClass: "search" }, [
+                    _c("i", { staticClass: "fas fa-search mx-2" }),
+                    _vm._v(" "),
+                    _c("input", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.search_feelings,
+                          expression: "search_feelings"
+                        }
+                      ],
+                      staticClass: "flex-grow-1",
+                      attrs: { type: "search", placeholder: "Search ..." },
+                      domProps: { value: _vm.search_feelings },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.search_feelings = $event.target.value
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c("hr"),
+                  _vm._v(" "),
                   _c(
                     "div",
                     { staticClass: "row no-gutters p-2 feeling-section" },
                     [
-                      _vm._l(_vm.feelings, function(feeling, index) {
+                      _vm._l(_vm.filtered_feelings, function(feeling, index) {
                         return [
                           _c(
                             "div",
@@ -45104,7 +45196,7 @@ var render = function() {
                     2
                   )
                 ]
-              : (_vm.toShow = "activity")
+              : _vm.toShow == "activity"
               ? [_c("div")]
               : _vm._e()
           ],
