@@ -31,24 +31,48 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <div class="modal-body">
+          <div class="modal-body p-0">
+            <div style="height: 300px; overflow-x: hidden; overflow-y: auto">
+              <div class="theme p-2 w-100" :style="theme">
+                <div
+                  ref="text"
+                  class="text"
+                  contenteditable="true"
+                  :data-placeholder="welcome_question"
+                />
+              </div>
+            </div>
             <div
-              ref="text"
-              class="text"
-              contenteditable="true"
-              :data-placeholder="welcome_question"
-            />
-            <div class="d-flex justify-content-lg-between">
-              <div>a</div>
+              class="d-flex justify-content-lg-between overflow-hidden align-items-center p-2"
+            >
+              <div class="flex-grow-1">
+                <img
+                  v-show="!pick_theme"
+                  src="/images/SATP_Aa_square-2x.png"
+                  class="img-fluid"
+                  style="height: 50px; cursor: pointer"
+                  @click="pick_theme = !pick_theme"
+                />
+                <theme-picker
+                  v-show="pick_theme"
+                  @hideThemePicker="pick_theme = false"
+                  @setTheme="theme = $event"
+                ></theme-picker>
+              </div>
               <div class="emoji">
-                <span @click="pick_emoji = !pick_emoji"
-                  ><i class="far fa-grin"
-                /></span>
                 <picker
                   v-show="pick_emoji"
                   set="twitter"
                   @select="selectEmoji"
+                  :showPreview="false"
+                  :pickerStyles="{
+                    position: 'fixed',
+                    transform: 'translate(-50%,-100%)',
+                  }"
                 />
+                <span @click="pick_emoji = !pick_emoji"
+                  ><i class="far fa-grin"
+                /></span>
               </div>
             </div>
           </div>
@@ -70,15 +94,19 @@
 
 <script>
 import { Picker } from "emoji-mart-vue";
+import ThemePicker from "./ThemePicker";
 
 export default {
   components: {
     Picker,
+    ThemePicker,
   },
   data() {
     return {
       pick_emoji: false,
+      pick_theme: false,
       text: "",
+      theme: {},
     };
   },
   computed: {
@@ -91,6 +119,9 @@ export default {
   },
   mounted() {
     this.hideEmojiPopupOnClickOutside();
+  },
+  beforeDestroy() {
+    this.removeHideEmojiPopupOnClickOutsideEvent();
   },
   methods: {
     showModal() {
@@ -111,6 +142,9 @@ export default {
           this.pick_emoji = false;
         }
       });
+    },
+    removeClickEventListenerOnRootDiv() {
+      this.$refs.add_post_component.removeEventListener("click");
     },
   },
 };
@@ -167,13 +201,18 @@ export default {
   .modal {
     .modal-content {
       border: none;
-      .text {
-        height: 150px;
-        outline: none;
-        overflow-y: auto;
-        &[contenteditable="true"]:empty:before {
-          content: attr(data-placeholder);
-          color: grey;
+      .theme {
+        color: #65676b;
+        .text {
+          height: 150px;
+          outline: none;
+          overflow-y: auto;
+          font-size: 1.7rem;
+          &[contenteditable="true"]:empty:before {
+            content: attr(data-placeholder);
+            font-weight: bold;
+            letter-spacing: 1px;
+          }
         }
       }
       .emoji {

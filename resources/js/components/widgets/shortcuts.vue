@@ -29,7 +29,6 @@ export default {
   methods: {
     fetchShortcuts() {
       window.axios.get("/widgets/shortcuts").then((response) => {
-        console.log(response);
       });
     },
   },

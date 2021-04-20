@@ -16,6 +16,7 @@ class CreatePostThemesTable extends Migration
         Schema::create('post_themes', function (Blueprint $table) {
             $table->id();
             $table->string('background_url');
+            $table->string('color')->nullable();
             $table->timestamps();
         });
     }
