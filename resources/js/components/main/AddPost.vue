@@ -32,8 +32,22 @@
             </button>
           </div>
           <div class="modal-body p-0">
+            <div class="author">
+              <img
+                :src="$store.state.user.me.image_url"
+                class="rounded-circle"
+              />
+              <div>
+                <p class="mb-0">{{ $store.state.user.me.name | capitalize }}</p>
+                <select v-model="audience_type">
+                  <option value="public">Public</option>
+                  <option value="friends">Friends</option>
+                  <option value="only_me">Only Me</option>
+                </select>
+              </div>
+            </div>
             <div class="post-editor">
-              <div class="theme p-2 w-100" :style="theme">
+              <div class="theme px-3 py-1 w-100" :style="theme">
                 <div
                   ref="text"
                   class="text"
@@ -107,6 +121,7 @@ export default {
       pick_theme: false,
       text: "",
       theme: {},
+      audience_type:'public',
     };
   },
   computed: {
@@ -201,6 +216,25 @@ export default {
   .modal {
     .modal-content {
       border: none;
+      .author {
+        display: flex;
+        padding: 0.5rem;
+        align-items: center;
+        img {
+          height: 35px;
+          margin-left: 0.5rem;
+          margin-right: 0.5rem;
+        }
+        p {
+          font-weight: bold;
+        }
+        select {
+          outline: none;
+          border: none;
+          background: #e8e8e8;
+          border-radius: 5px;
+        }
+      }
       .post-editor {
         height: 300px;
         overflow-x: hidden;
