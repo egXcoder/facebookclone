@@ -143,6 +143,7 @@
 import { Picker } from "emoji-mart-vue";
 import ThemePicker from "./ThemePicker";
 import FeelingActivityModal from "./FeelingActivityModal";
+import Twemoji from "twemoji";
 
 export default {
   components: {
@@ -180,7 +181,7 @@ export default {
       window.$(this.$refs.modal).modal("show");
     },
     selectEmoji(emoji) {
-      this.$refs.text.innerText += emoji.native;
+      this.$refs.text.innerHTML += Twemoji.parse(emoji.native);
     },
     hideEmojiPopupOnClickOutside() {
       window.$(this.$refs.add_post_component).click(() => {
@@ -320,6 +321,12 @@ export default {
               content: attr(data-placeholder);
               font-weight: bold;
               letter-spacing: 1px;
+            }
+            img.emoji {
+              height: 1em;
+              width: 1em;
+              margin: 0 0.05em 0 0.1em;
+              vertical-align: -0.1em;
             }
           }
         }
