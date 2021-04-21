@@ -181,7 +181,7 @@ export default {
       window.$(this.$refs.modal).modal("show");
     },
     selectEmoji(emoji) {
-      this.$refs.text.innerHTML += Twemoji.parse(emoji.native);
+      this.$refs.text.innerText += emoji.native;
     },
     hideEmojiPopupOnClickOutside() {
       window.$(this.$refs.add_post_component).click(() => {

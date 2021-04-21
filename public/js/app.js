@@ -2031,7 +2031,7 @@ __webpack_require__.r(__webpack_exports__);
       window.$(this.$refs.modal).modal("show");
     },
     selectEmoji: function selectEmoji(emoji) {
-      this.$refs.text.innerHTML += twemoji__WEBPACK_IMPORTED_MODULE_3__.default.parse(emoji["native"]);
+      this.$refs.text.innerText += emoji["native"];
     },
     hideEmojiPopupOnClickOutside: function hideEmojiPopupOnClickOutside() {
       var _this = this;
