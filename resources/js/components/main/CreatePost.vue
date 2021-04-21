@@ -13,7 +13,7 @@
       </div>
       <hr />
       <div class="d-flex extra-actions">
-        <div class="feeling-activity">
+        <div class="feeling-activity" @click="showFeelingActivityModal()">
           <span class="icon mx-1"><i class="far fa-grin" /></span>
           Feeling/Activity
         </div>

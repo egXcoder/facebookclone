@@ -44861,7 +44861,20 @@ var render = function() {
         _vm._v(" "),
         _c("hr"),
         _vm._v(" "),
-        _vm._m(0)
+        _c("div", { staticClass: "d-flex extra-actions" }, [
+          _c(
+            "div",
+            {
+              staticClass: "feeling-activity",
+              on: {
+                click: function($event) {
+                  return _vm.showFeelingActivityModal()
+                }
+              }
+            },
+            [_vm._m(0), _vm._v("\n        Feeling/Activity\n      ")]
+          )
+        ])
       ]),
       _vm._v(" "),
       _c("div", { ref: "modal", staticClass: "modal fade" }, [
@@ -45121,13 +45134,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "d-flex extra-actions" }, [
-      _c("div", { staticClass: "feeling-activity" }, [
-        _c("span", { staticClass: "icon mx-1" }, [
-          _c("i", { staticClass: "far fa-grin" })
-        ]),
-        _vm._v("\n        Feeling/Activity\n      ")
-      ])
+    return _c("span", { staticClass: "icon mx-1" }, [
+      _c("i", { staticClass: "far fa-grin" })
     ])
   },
   function() {
