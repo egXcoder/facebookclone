@@ -38,12 +38,12 @@
                 placeholder="Search ..."
               />
             </div>
-            <hr>
+            <hr />
             <div class="row no-gutters p-2 feeling-section">
               <template v-for="(feeling, index) in filtered_feelings">
                 <div
                   class="col-md-6"
-                  @click="$emit('select', feeling)"
+                  @click="$emit('selectFeeling', feeling)"
                   :key="index"
                 >
                   <div class="single-feeling p-1">
@@ -56,14 +56,68 @@
           </template>
 
           <template v-else-if="toShow == 'activity'">
-            <div></div>
+            <template v-if="selected_activity">
+              <div class="d-flex align-items-center mx-2">
+                <span class="selected-activity">
+                  {{ selected_activity.name | capitalize }}...
+                  <i
+                    class="fas fa-times mx-1"
+                    @click="selected_activity = null"
+                  ></i>
+                </span>
+                <div class="search flex-grow-1">
+                  <i class="fas fa-search mx-2"></i>
+                  <input
+                    type="search"
+                    v-model="search_activities"
+                    class="flex-grow-1"
+                    placeholder="Search ..."
+                  />
+                </div>
+              </div>
+              <hr />
+              <div class="row no-gutters p-2 nested-activities-section">
+                <template v-for="(activity, index) in filtered_activities">
+                  <div
+                    class="single-activity col-md-6 p-1"
+                    :key="index"
+                    @click="$emit('selectActivity', activity)"
+                  >
+                    <img :src="activity.icon" class="img-fluid" />
+                    {{ activity.name }}
+                  </div>
+                </template>
+              </div>
+            </template>
+
+            <template v-else>
+              <div class="search">
+                <i class="fas fa-search mx-2"></i>
+                <input
+                  type="search"
+                  v-model="search_activities"
+                  class="flex-grow-1"
+                  placeholder="Search ..."
+                />
+              </div>
+              <hr />
+              <div class="row no-gutters p-2 activities-section">
+                <template v-for="(activity, index) in filtered_activities">
+                  <div
+                    class="single-activity p-1"
+                    :key="index"
+                    @click="selected_activity = activity"
+                  >
+                    <img :src="activity.icon" class="img-fluid" />
+                    {{ activity.name | capitalize }}
+                    <div class="float-right">
+                      <i class="fas fa-chevron-right"></i>
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </template>
           </template>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Save changes</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">
-            Close
-          </button>
         </div>
       </div>
     </div>
@@ -78,6 +132,8 @@ export default {
       feelings: [],
       activities: [],
       search_feelings: "",
+      search_activities: "",
+      selected_activity: null,
     };
   },
   computed: {
@@ -88,11 +144,35 @@ export default {
 
       let computed_feelings = [];
       for (let feeling of this.feelings) {
-        if (feeling.name.includes(this.search_feelings)) {
+        if (
+          feeling.name
+            .toLowerCase()
+            .includes(this.search_feelings.toLowerCase())
+        ) {
           computed_feelings.push(feeling);
         }
       }
       return computed_feelings;
+    },
+    filtered_activities() {
+      function search(activities, search) {
+        if (!search.length) {
+          return activities;
+        }
+        let computed_activities = [];
+        for (let activity of activities) {
+          if (activity.name.toLowerCase().includes(search.toLowerCase())) {
+            computed_activities.push(activity);
+          }
+        }
+        return computed_activities;
+      }
+
+      if (this.selected_activity) {
+        return search(this.selected_activity.children, this.search_activities);
+      }
+
+      return search(this.activities, this.search_activities);
     },
   },
   created() {
@@ -117,8 +197,8 @@ export default {
 <style lang="scss" scoped>
 .button-to-show {
   background: rgb(255, 255, 255);
-  padding: 1rem;
-  margin: 0.5rem;
+  padding: 0.5rem 1rem;
+  margin: 0.3rem;
   cursor: pointer;
   border-radius: 3px;
   &:hover {
@@ -134,7 +214,7 @@ export default {
   background: #eee;
   margin: 1rem;
   padding: 0.3rem;
-  border-radius: 7px;
+  border-radius: 10px;
   align-items: center;
   input {
     border: none;
@@ -143,11 +223,58 @@ export default {
   }
 }
 .feeling-section {
+  font-size: 1rem;
+  max-height: 300px;
+  overflow: auto;
   .single-feeling {
     cursor: pointer;
     &:hover {
       background: #eee;
+      border-radius: 7px;
     }
   }
+}
+
+.activities-section,
+.nested-activities-section {
+  font-size: 1rem;
+  max-height: 300px;
+  overflow: auto;
+  display: flex;
+  flex-flow: column;
+  .single-activity {
+    cursor: pointer;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    img {
+      border-radius: 50%;
+      height: 40px;
+      padding: 6px;
+      background: #eee;
+    }
+    &:hover {
+      background: #eee;
+      border-radius: 7px;
+    }
+  }
+}
+
+.selected-activity {
+  background: #e7f3ff;
+  padding: 0.3rem;
+  border-radius: 4px;
+  color: hsl(214deg 89% 52%);
+  i {
+    cursor: pointer;
+    border-radius: 50%;
+    padding: 0.3rem;
+  }
+  i:hover {
+    background: #eee;
+  }
+}
+
+.nested-activities-section {
+  flex-flow: wrap;
 }
 </style>

@@ -1976,6 +1976,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -1990,8 +2004,9 @@ __webpack_require__.r(__webpack_exports__);
       pick_emoji: false,
       pick_theme: false,
       text: "",
-      theme: {},
-      feeling: {},
+      theme: null,
+      feeling: null,
+      activity: null,
       audience_type: "public"
     };
   },
@@ -2041,6 +2056,16 @@ __webpack_require__.r(__webpack_exports__);
     hideFeelingActivityModal: function hideFeelingActivityModal() {
       window.$(this.$refs.feeling_activity_modal.$el).modal("hide");
       window.$(this.$refs.modal).modal("show");
+    },
+    selectFeeling: function selectFeeling(feeling) {
+      this.feeling = feeling;
+      this.activity = null;
+      this.hideFeelingActivityModal();
+    },
+    selectActivity: function selectActivity(activity) {
+      this.activity = activity;
+      this.feeling = null;
+      this.hideFeelingActivityModal();
     }
   }
 });
@@ -2136,13 +2161,69 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       toShow: "feeling",
       feelings: [],
       activities: [],
-      search_feelings: ""
+      search_feelings: "",
+      search_activities: "",
+      selected_activity: null
     };
   },
   computed: {
@@ -2160,7 +2241,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var feeling = _step.value;
 
-          if (feeling.name.includes(this.search_feelings)) {
+          if (feeling.name.toLowerCase().includes(this.search_feelings.toLowerCase())) {
             computed_feelings.push(feeling);
           }
         }
@@ -2171,6 +2252,40 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
 
       return computed_feelings;
+    },
+    filtered_activities: function filtered_activities() {
+      function search(activities, search) {
+        if (!search.length) {
+          return activities;
+        }
+
+        var computed_activities = [];
+
+        var _iterator2 = _createForOfIteratorHelper(activities),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var activity = _step2.value;
+
+            if (activity.name.toLowerCase().includes(search.toLowerCase())) {
+              computed_activities.push(activity);
+            }
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        return computed_activities;
+      }
+
+      if (this.selected_activity) {
+        return search(this.selected_activity.children, this.search_activities);
+      }
+
+      return search(this.activities, this.search_activities);
     }
   },
   created: function created() {
@@ -7231,7 +7346,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".button-to-show[data-v-37103cbd] {\n  background: white;\n  padding: 1rem;\n  margin: 0.5rem;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.button-to-show[data-v-37103cbd]:hover {\n  background: #eee;\n}\n.button-to-show.active[data-v-37103cbd] {\n  color: #1876f2;\n  border-bottom: 2px solid #1876f2;\n}\n.search[data-v-37103cbd] {\n  display: flex;\n  background: #eee;\n  margin: 1rem;\n  padding: 0.3rem;\n  border-radius: 7px;\n  align-items: center;\n}\n.search input[data-v-37103cbd] {\n  border: none;\n  outline: none;\n  background: #eee;\n}\n.feeling-section .single-feeling[data-v-37103cbd] {\n  cursor: pointer;\n}\n.feeling-section .single-feeling[data-v-37103cbd]:hover {\n  background: #eee;\n}", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".button-to-show[data-v-37103cbd] {\n  background: white;\n  padding: 0.5rem 1rem;\n  margin: 0.3rem;\n  cursor: pointer;\n  border-radius: 3px;\n}\n.button-to-show[data-v-37103cbd]:hover {\n  background: #eee;\n}\n.button-to-show.active[data-v-37103cbd] {\n  color: #1876f2;\n  border-bottom: 2px solid #1876f2;\n}\n.search[data-v-37103cbd] {\n  display: flex;\n  background: #eee;\n  margin: 1rem;\n  padding: 0.3rem;\n  border-radius: 10px;\n  align-items: center;\n}\n.search input[data-v-37103cbd] {\n  border: none;\n  outline: none;\n  background: #eee;\n}\n.feeling-section[data-v-37103cbd] {\n  font-size: 1rem;\n  max-height: 300px;\n  overflow: auto;\n}\n.feeling-section .single-feeling[data-v-37103cbd] {\n  cursor: pointer;\n}\n.feeling-section .single-feeling[data-v-37103cbd]:hover {\n  background: #eee;\n  border-radius: 7px;\n}\n.activities-section[data-v-37103cbd],\n.nested-activities-section[data-v-37103cbd] {\n  font-size: 1rem;\n  max-height: 300px;\n  overflow: auto;\n  display: flex;\n  flex-flow: column;\n}\n.activities-section .single-activity[data-v-37103cbd],\n.nested-activities-section .single-activity[data-v-37103cbd] {\n  cursor: pointer;\n  margin-top: 3px;\n  margin-bottom: 3px;\n}\n.activities-section .single-activity img[data-v-37103cbd],\n.nested-activities-section .single-activity img[data-v-37103cbd] {\n  border-radius: 50%;\n  height: 40px;\n  padding: 6px;\n  background: #eee;\n}\n.activities-section .single-activity[data-v-37103cbd]:hover,\n.nested-activities-section .single-activity[data-v-37103cbd]:hover {\n  background: #eee;\n  border-radius: 7px;\n}\n.selected-activity[data-v-37103cbd] {\n  background: #e7f3ff;\n  padding: 0.3rem;\n  border-radius: 4px;\n  color: #1876f2;\n}\n.selected-activity i[data-v-37103cbd] {\n  cursor: pointer;\n  border-radius: 50%;\n  padding: 0.3rem;\n}\n.selected-activity i[data-v-37103cbd]:hover {\n  background: #eee;\n}\n.nested-activities-section[data-v-37103cbd] {\n  flex-flow: wrap;\n}", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -44764,9 +44879,11 @@ var render = function() {
                 _c("div", [
                   _c("p", { staticClass: "mb-0" }, [
                     _vm._v(
-                      _vm._s(
-                        _vm._f("capitalize")(_vm.$store.state.user.me.name)
-                      ) + " "
+                      "\n                " +
+                        _vm._s(
+                          _vm._f("capitalize")(_vm.$store.state.user.me.name)
+                        ) +
+                        "\n                "
                     ),
                     _vm.feeling
                       ? _c("span", [
@@ -44777,6 +44894,24 @@ var render = function() {
                                 " feeling " +
                                 _vm.feeling.name
                             )
+                          )
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.activity
+                      ? _c("span", [
+                          _vm._v("\n                  is\n                  "),
+                          _c("img", {
+                            staticStyle: { height: "20px", margin: "0px" },
+                            attrs: { src: _vm.activity.icon }
+                          }),
+                          _vm._v(
+                            "\n                  " +
+                              _vm._s(
+                                _vm.activity.parent_name +
+                                  " " +
+                                  _vm.activity.name
+                              )
                           )
                         ])
                       : _vm._e()
@@ -44968,9 +45103,11 @@ var render = function() {
       _c("feeling-activity-modal", {
         ref: "feeling_activity_modal",
         on: {
-          select: function($event) {
-            _vm.feeling = $event
-            _vm.hideFeelingActivityModal()
+          selectFeeling: function($event) {
+            return _vm.selectFeeling($event)
+          },
+          selectActivity: function($event) {
+            return _vm.selectActivity($event)
           },
           hide: _vm.hideFeelingActivityModal
         }
@@ -45175,7 +45312,7 @@ var render = function() {
                               staticClass: "col-md-6",
                               on: {
                                 click: function($event) {
-                                  return _vm.$emit("select", feeling)
+                                  return _vm.$emit("selectFeeling", feeling)
                                 }
                               }
                             },
@@ -45197,13 +45334,190 @@ var render = function() {
                   )
                 ]
               : _vm.toShow == "activity"
-              ? [_c("div")]
+              ? [
+                  _vm.selected_activity
+                    ? [
+                        _c(
+                          "div",
+                          { staticClass: "d-flex align-items-center mx-2" },
+                          [
+                            _c("span", { staticClass: "selected-activity" }, [
+                              _vm._v(
+                                "\n                " +
+                                  _vm._s(
+                                    _vm._f("capitalize")(
+                                      _vm.selected_activity.name
+                                    )
+                                  ) +
+                                  "...\n                "
+                              ),
+                              _c("i", {
+                                staticClass: "fas fa-times mx-1",
+                                on: {
+                                  click: function($event) {
+                                    _vm.selected_activity = null
+                                  }
+                                }
+                              })
+                            ]),
+                            _vm._v(" "),
+                            _c("div", { staticClass: "search flex-grow-1" }, [
+                              _c("i", { staticClass: "fas fa-search mx-2" }),
+                              _vm._v(" "),
+                              _c("input", {
+                                directives: [
+                                  {
+                                    name: "model",
+                                    rawName: "v-model",
+                                    value: _vm.search_activities,
+                                    expression: "search_activities"
+                                  }
+                                ],
+                                staticClass: "flex-grow-1",
+                                attrs: {
+                                  type: "search",
+                                  placeholder: "Search ..."
+                                },
+                                domProps: { value: _vm.search_activities },
+                                on: {
+                                  input: function($event) {
+                                    if ($event.target.composing) {
+                                      return
+                                    }
+                                    _vm.search_activities = $event.target.value
+                                  }
+                                }
+                              })
+                            ])
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c("hr"),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass:
+                              "row no-gutters p-2 nested-activities-section"
+                          },
+                          [
+                            _vm._l(_vm.filtered_activities, function(
+                              activity,
+                              index
+                            ) {
+                              return [
+                                _c(
+                                  "div",
+                                  {
+                                    key: index,
+                                    staticClass: "single-activity col-md-6 p-1",
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.$emit(
+                                          "selectActivity",
+                                          activity
+                                        )
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("img", {
+                                      staticClass: "img-fluid",
+                                      attrs: { src: activity.icon }
+                                    }),
+                                    _vm._v(
+                                      "\n                  " +
+                                        _vm._s(activity.name) +
+                                        "\n                "
+                                    )
+                                  ]
+                                )
+                              ]
+                            })
+                          ],
+                          2
+                        )
+                      ]
+                    : [
+                        _c("div", { staticClass: "search" }, [
+                          _c("i", { staticClass: "fas fa-search mx-2" }),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.search_activities,
+                                expression: "search_activities"
+                              }
+                            ],
+                            staticClass: "flex-grow-1",
+                            attrs: {
+                              type: "search",
+                              placeholder: "Search ..."
+                            },
+                            domProps: { value: _vm.search_activities },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.search_activities = $event.target.value
+                              }
+                            }
+                          })
+                        ]),
+                        _vm._v(" "),
+                        _c("hr"),
+                        _vm._v(" "),
+                        _c(
+                          "div",
+                          {
+                            staticClass: "row no-gutters p-2 activities-section"
+                          },
+                          [
+                            _vm._l(_vm.filtered_activities, function(
+                              activity,
+                              index
+                            ) {
+                              return [
+                                _c(
+                                  "div",
+                                  {
+                                    key: index,
+                                    staticClass: "single-activity p-1",
+                                    on: {
+                                      click: function($event) {
+                                        _vm.selected_activity = activity
+                                      }
+                                    }
+                                  },
+                                  [
+                                    _c("img", {
+                                      staticClass: "img-fluid",
+                                      attrs: { src: activity.icon }
+                                    }),
+                                    _vm._v(
+                                      "\n                  " +
+                                        _vm._s(
+                                          _vm._f("capitalize")(activity.name)
+                                        ) +
+                                        "\n                  "
+                                    ),
+                                    _vm._m(0, true)
+                                  ]
+                                )
+                              ]
+                            })
+                          ],
+                          2
+                        )
+                      ]
+                ]
               : _vm._e()
           ],
           2
-        ),
-        _vm._v(" "),
-        _vm._m(0)
+        )
       ])
     ])
   ])
@@ -45213,21 +45527,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        { staticClass: "btn btn-primary", attrs: { type: "button" } },
-        [_vm._v("Save changes")]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-secondary",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [_vm._v("\n          Close\n        ")]
-      )
+    return _c("div", { staticClass: "float-right" }, [
+      _c("i", { staticClass: "fas fa-chevron-right" })
     ])
   }
 ]

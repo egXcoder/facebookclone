@@ -17,7 +17,7 @@ class PostActivitySeeder extends Seeder
         $activities = [
             [
                 'name'=>'Celebrating',
-                'icon_url'=>'/images/celebrating.png',
+                'icon'=>'/images/celebrating.png',
                 'children'=>[
                     [
                         "friendship",
@@ -48,11 +48,11 @@ class PostActivitySeeder extends Seeder
             ],
             [
                 'name'=>'Watching',
-                'icon_url'=>'/images/watching.png',
+                'icon'=>'/images/watching.png',
             ],
             [
                 'name'=>'Eating',
-                'icon_url'=>'/images/eating.png',
+                'icon'=>'/images/eating.png',
                 'children'=>[
                     [
                         "lunch",
@@ -97,7 +97,7 @@ class PostActivitySeeder extends Seeder
             ],
             [
                 'name'=>'Drinking',
-                'icon_url'=>'/images/drinking.png',
+                'icon'=>'/images/drinking.png',
                 'children'=>[
                     [
                         "coffee",
@@ -129,7 +129,7 @@ class PostActivitySeeder extends Seeder
             ],
             [
                 'name'=>'Attending',
-                'icon_url'=>'/images/attending.png',
+                'icon'=>'/images/attending.png',
                 'children'=>[
                     [
                         "church",
@@ -160,11 +160,11 @@ class PostActivitySeeder extends Seeder
             ],
             [
                 'name'=>'Travelling',
-                'icon_url'=>'/images/travelling.png',
+                'icon'=>'/images/travelling.png',
             ],
             [
                 'name'=>'Listening To',
-                'icon_url'=>'/images/listening.png',
+                'icon'=>'/images/listening.png',
                 'children'=>[
                     [
                         "Music",
@@ -187,7 +187,7 @@ class PostActivitySeeder extends Seeder
             ],
             [
                 'name'=>'Looking For',
-                'icon_url'=>'/images/looking.png',
+                'icon'=>'/images/looking.png',
                 'children'=>[
                     [
                         "advice",
@@ -222,21 +222,21 @@ class PostActivitySeeder extends Seeder
             ],
             [
                 'name'=>'Reading',
-                'icon_url'=>'/images/reading.png',
+                'icon'=>'/images/reading.png',
             ],
         ];
 
         foreach ($activities as $activity) {
             $created = PostActivity::create([
                 'name' => $activity['name'],
-                'icon_url' => $activity['icon_url'],
+                'icon' => $activity['icon'],
             ]);
 
             if (array_key_exists('children', $activity)) {
                 foreach ($activity['children'] as $child) {
                     PostActivity::create([
                         'name'=>$child[0],
-                        'icon_url'=>$child[1],
+                        'icon'=>$child[1],
                         'parent_id'=>$created->id
                     ]);
                 }

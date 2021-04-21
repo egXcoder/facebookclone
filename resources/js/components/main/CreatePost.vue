@@ -38,7 +38,20 @@
                 class="rounded-circle"
               />
               <div>
-                <p class="mb-0">{{ $store.state.user.me.name | capitalize }} <span v-if="feeling">{{`is ${feeling.icon} feeling ${feeling.name}`}}</span></p>
+                <p class="mb-0">
+                  {{ $store.state.user.me.name | capitalize }}
+                  <span v-if="feeling">{{
+                    `is ${feeling.icon} feeling ${feeling.name}`
+                  }}</span>
+                  <span v-if="activity">
+                    is
+                    <img
+                      :src="activity.icon"
+                      style="height: 20px; margin: 0px"
+                    />
+                    {{ activity.parent_name + " " + activity.name }}</span
+                  >
+                </p>
                 <select v-model="audience_type">
                   <option value="public">Public</option>
                   <option value="friends">Friends</option>
@@ -118,7 +131,8 @@
     </div>
 
     <feeling-activity-modal
-      @select="feeling = $event;hideFeelingActivityModal()"
+      @selectFeeling="selectFeeling($event)"
+      @selectActivity="selectActivity($event)"
       @hide="hideFeelingActivityModal"
       ref="feeling_activity_modal"
     />
@@ -141,8 +155,9 @@ export default {
       pick_emoji: false,
       pick_theme: false,
       text: "",
-      theme: {},
-      feeling:{},
+      theme: null,
+      feeling: null,
+      activity: null,
       audience_type: "public",
     };
   },
@@ -190,6 +205,16 @@ export default {
     hideFeelingActivityModal() {
       window.$(this.$refs.feeling_activity_modal.$el).modal("hide");
       window.$(this.$refs.modal).modal("show");
+    },
+    selectFeeling(feeling) {
+      this.feeling = feeling;
+      this.activity = null;
+      this.hideFeelingActivityModal();
+    },
+    selectActivity(activity) {
+      this.activity = activity;
+      this.feeling = null;
+      this.hideFeelingActivityModal();
     },
   },
 };

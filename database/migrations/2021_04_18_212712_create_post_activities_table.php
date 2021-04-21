@@ -16,7 +16,7 @@ class CreatePostActivitiesTable extends Migration
         Schema::create('post_activities', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('icon_url');
+            $table->string('icon');
             $table->bigInteger('parent_id')->unsigned()->nullable();
             $table->timestamps();
         });
