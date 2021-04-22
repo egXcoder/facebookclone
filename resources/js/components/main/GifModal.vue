@@ -10,7 +10,7 @@
         </div>
         <div class="modal-body p-0" ref="modal_body">
           <div v-for="(gif, index) in gifs_to_render" :key="index" class="gif-container">
-            <img :src="gif.gif_url" style="width: 100%" />
+            <img :src="gif.gif_url" style="width: 100%" @click="$emit('hide', gif)" />
           </div>
           <div class="loading" ref="loading">
             <div class="ball"></div>
@@ -83,6 +83,9 @@ export default {
   height: 500px;
   overflow-x: hidden;
   overflow-y: auto;
+  .gif-container {
+    cursor: pointer;
+  }
   .loading {
     opacity: 0;
     display: flex;

@@ -58,12 +58,16 @@
                   contenteditable="true"
                   :data-placeholder="welcome_question"
                 />
+                <div class="gif-container" v-if="Object.keys(gif).length">
+                  <span @click="gif = {}">X</span>
+                  <img :src="gif.gif_url" style="width: 100%" />
+                </div>
               </div>
             </div>
             <div class="d-flex justify-content-lg-between overflow-hidden align-items-center p-2">
               <div class="flex-grow-1">
                 <img
-                  v-show="!pick_theme"
+                  v-show="!pick_theme && !isAddToPostActionDisabled('theme')"
                   src="/images/SATP_Aa_square-2x.png"
                   class="img-fluid"
                   style="height: 42px; cursor: pointer"
@@ -101,7 +105,11 @@
                       <i class="fas fa-user-tag" />
                     </span>
                   </div>
-                  <div class="gif" @click="showGifModal()">
+                  <div
+                    class="gif"
+                    @click="showGifModal()"
+                    :class="{ disabled_action: isAddToPostActionDisabled('gif') }"
+                  >
                     <span class="icon mx-1">
                       <i class="fas fa-images"></i>
                     </span>
@@ -221,7 +229,9 @@ let GifMixin = {
     },
     hideAndSelectGif(gif) {
       this.hideGifModal();
-      this.gif = gif;
+      if (gif) {
+        this.gif = gif;
+      }
     },
   },
 };
@@ -234,13 +244,13 @@ export default {
     TagFriendsModal,
     GifModal,
   },
-  mixins: [FeelingActivityMixin, TagFriendsMixin,GifMixin],
+  mixins: [FeelingActivityMixin, TagFriendsMixin, GifMixin],
   data() {
     return {
       pick_emoji: false,
       pick_theme: false,
       text: "",
-      theme: null,
+      theme: {},
       audience_type: "public",
     };
   },
@@ -280,6 +290,15 @@ export default {
     },
     removeClickEventListenerOnRootDiv() {
       this.$refs.add_post_component.removeEventListener("click");
+    },
+    isAddToPostActionDisabled(action) {
+      if (action == "gif") {
+        return Object.keys(this.theme).length;
+      }
+
+      if (action == "theme") {
+        return Object.keys(this.gif).length;
+      }
     },
   },
 };
@@ -377,7 +396,6 @@ export default {
         .theme {
           color: #65676b;
           .text {
-            height: 150px;
             outline: none;
             overflow-y: auto;
             font-size: 1.7rem;
@@ -392,6 +410,23 @@ export default {
               margin: 0 0.05em 0 0.1em;
               vertical-align: -0.1em;
             }
+          }
+        }
+        .gif-container {
+          position: relative;
+          span {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 30px;
+            height: 30px;
+            background: white;
+            color: gray;
+            cursor: pointer;
           }
         }
       }
@@ -430,7 +465,7 @@ export default {
               color: #176edf;
             }
           }
-          .gif{
+          .gif {
             vertical-align: middle;
             cursor: pointer;
             margin-left: 5px;
@@ -439,6 +474,10 @@ export default {
             &:hover {
               color: #46a85f;
             }
+          }
+          .disabled_action {
+            color: gray;
+            pointer-events: none;
           }
         }
       }
