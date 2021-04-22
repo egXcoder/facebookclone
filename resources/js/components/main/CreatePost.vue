@@ -101,6 +101,11 @@
                       <i class="fas fa-user-tag" />
                     </span>
                   </div>
+                  <div class="gif" @click="showGifModal()">
+                    <span class="icon mx-1">
+                      <i class="fas fa-images"></i>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -119,6 +124,8 @@
     />
 
     <tag-friends-modal ref="tag_friends_modal" @hide="hideAndSelectTagFriends($event)" />
+
+    <gif-modal ref="gif_modal" @hide="hideAndSelectGif($event)"></gif-modal>
   </div>
 </template>
 
@@ -127,6 +134,7 @@ import { Picker } from "emoji-mart-vue";
 import ThemePicker from "./ThemePicker";
 import FeelingActivityModal from "./FeelingActivityModal";
 import TagFriendsModal from "./TagFriendsModal";
+import GifModal from "./GifModal";
 
 let FeelingActivityMixin = {
   data() {
@@ -191,7 +199,29 @@ let TagFriendsMixin = {
     },
     hideAndSelectTagFriends(tagged = {}) {
       this.hideTagFriendsModal();
-      this.tagged = Object.assign({}, tagged);
+      this.tagged = tagged;
+    },
+  },
+};
+
+let GifMixin = {
+  data() {
+    return {
+      gif: {},
+    };
+  },
+  methods: {
+    showGifModal() {
+      window.$(this.$refs.gif_modal.$el).modal("show");
+      window.$(this.$refs.modal).modal("hide");
+    },
+    hideGifModal() {
+      window.$(this.$refs.gif_modal.$el).modal("hide");
+      window.$(this.$refs.modal).modal("show");
+    },
+    hideAndSelectGif(gif) {
+      this.hideGifModal();
+      this.gif = gif;
     },
   },
 };
@@ -202,8 +232,9 @@ export default {
     ThemePicker,
     FeelingActivityModal,
     TagFriendsModal,
+    GifModal,
   },
-  mixins: [FeelingActivityMixin, TagFriendsMixin],
+  mixins: [FeelingActivityMixin, TagFriendsMixin,GifMixin],
   data() {
     return {
       pick_emoji: false,
@@ -397,6 +428,16 @@ export default {
             color: #1877f2;
             &:hover {
               color: #176edf;
+            }
+          }
+          .gif{
+            vertical-align: middle;
+            cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            color: #45bd62;
+            &:hover {
+              color: #46a85f;
             }
           }
         }

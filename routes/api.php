@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\GifController;
 use App\Http\Controllers\PostActivityController;
 use App\Http\Controllers\PostFeelingController;
 use App\Http\Controllers\PostThemeController;
@@ -30,4 +31,5 @@ Route::prefix('posts')->group(function () {
     Route::get('/themes', [PostThemeController::class,'fetch']);
     Route::get('/feelings', [PostFeelingController::class,'fetch']);
     Route::get('/activities', [PostActivityController::class,'fetch']);
+    Route::get('/gifs', [GifController::class,'fetch']);
 });
