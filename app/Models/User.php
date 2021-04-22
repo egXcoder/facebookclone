@@ -20,7 +20,7 @@ class User extends Authenticatable
         'email',
         'password',
         'image_url',
-        'api_token'
+        'api_token',
     ];
 
     /**
@@ -42,7 +42,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function tagged_users()
+    public function friends()
+    {
+        return $this->belongsToMany(self::class, "users_friends", "user_id", "friend_id")->withTimestamps();
+    }
+
+    public function tagged_posts()
     {
         return $this->belongsToMany(Post::class, "tagged_users", "user_id", "post_id");
     }

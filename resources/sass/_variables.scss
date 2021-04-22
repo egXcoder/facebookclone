@@ -1,10 +1,16 @@
-$primary : #1877f2;
+:root {
+    --blue-link: #216fdb;
+    --accent: #e7f3ff;
+    --divider : #ced0d4;
+}
+
+$primary: #1877f2;
 
 // Body
 $body-bg: #f8fafc;
 
 // Typography
-$font-family-sans-serif: 'Nunito', sans-serif;
+$font-family-sans-serif: "Nunito", sans-serif;
 $font-size-base: 0.9rem;
 $line-height-base: 1.6;
 

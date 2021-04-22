@@ -1,12 +1,8 @@
 <template>
-  <div class="add-post-component" ref="add_post_component">
+  <div ref="add_post_component" class="add-post-component">
     <div class="add-post">
       <div class="d-flex align-items-center onmind">
-        <img
-          :src="$store.state.user.me.image_url"
-          class="img-fluid"
-          @click="showModal()"
-        />
+        <img :src="$store.state.user.me.image_url" class="img-fluid" @click="showModal()" />
         <p class="flex-grow-1" @click="showModal()">
           {{ welcome_question }}
         </p>
@@ -24,33 +20,28 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header align-items-center">
-            <h5 class="modal-title font-weight-bold text-center flex-grow-1">
-              Create Post
-            </h5>
+            <h5 class="modal-title font-weight-bold text-center flex-grow-1">Create Post</h5>
             <button type="button" class="close" data-dismiss="modal">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body p-0">
             <div class="author">
-              <img
-                :src="$store.state.user.me.image_url"
-                class="rounded-circle"
-              />
+              <img :src="$store.state.user.me.image_url" class="rounded-circle" />
               <div>
                 <p class="mb-0">
                   {{ $store.state.user.me.name | capitalize }}
-                  <span v-if="feeling">{{
-                    `is ${feeling.icon} feeling ${feeling.name}`
-                  }}</span>
+                  <span v-if="feeling">{{ `is ${feeling.icon} feeling ${feeling.name}` }}</span>
                   <span v-if="activity">
                     is
-                    <img
-                      :src="activity.icon"
-                      style="height: 20px; margin: 0px"
-                    />
-                    {{ activity.parent_name + " " + activity.name }}</span
-                  >
+                    <img :src="activity.icon" style="height: 20px; margin: 0px" />
+                    {{ `${activity.parent_name} ${activity.name}` }}
+                  </span>
+
+                  <span v-if="Object.keys(tagged).length > 0"
+                    >with
+                    <span>{{ tagged_names.join(", ") }}</span>
+                  </span>
                 </p>
                 <select v-model="audience_type">
                   <option value="public">Public</option>
@@ -69,48 +60,46 @@
                 />
               </div>
             </div>
-            <div
-              class="d-flex justify-content-lg-between overflow-hidden align-items-center p-2"
-            >
+            <div class="d-flex justify-content-lg-between overflow-hidden align-items-center p-2">
               <div class="flex-grow-1">
                 <img
                   v-show="!pick_theme"
                   src="/images/SATP_Aa_square-2x.png"
                   class="img-fluid"
-                  style="height: 32px; cursor: pointer"
+                  style="height: 42px; cursor: pointer"
                   @click="pick_theme = !pick_theme"
                 />
                 <theme-picker
                   v-show="pick_theme"
                   @hideThemePicker="pick_theme = false"
                   @setTheme="theme = $event"
-                ></theme-picker>
+                />
               </div>
               <div class="emoji">
                 <picker
                   v-show="pick_emoji"
                   set="twitter"
-                  @select="selectEmoji"
-                  :showPreview="false"
-                  :pickerStyles="{
+                  :show-preview="false"
+                  :picker-styles="{
                     position: 'fixed',
                     transform: 'translate(-50%,-100%)',
                   }"
+                  @select="selectEmoji"
                 />
-                <span @click="pick_emoji = !pick_emoji"
-                  ><i class="far fa-grin"
-                /></span>
+                <span @click="pick_emoji = !pick_emoji"><i class="far fa-grin" /></span>
               </div>
             </div>
             <div class="add-to-your-post">
               <div class="row align-items-center">
                 <div class="col-md-4 font-weight-bold">Add To your Post</div>
                 <div class="col-md-8 d-flex actions">
-                  <div
-                    class="feeling-activity"
-                    @click="showFeelingActivityModal()"
-                  >
+                  <div class="feeling-activity" @click="showFeelingActivityModal()">
                     <span class="icon mx-1"><i class="far fa-grin" /></span>
+                  </div>
+                  <div class="tag-friends" @click="showTagFriendsModal()">
+                    <span class="icon mx-1">
+                      <i class="fas fa-user-tag" />
+                    </span>
                   </div>
                 </div>
               </div>
@@ -118,24 +107,18 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-primary">Save changes</button>
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
     </div>
 
     <feeling-activity-modal
-      @selectFeeling="selectFeeling($event)"
-      @selectActivity="selectActivity($event)"
-      @hide="hideFeelingActivityModal"
       ref="feeling_activity_modal"
+      @hide="hideAndSelectFeelingActivity($event)"
     />
+
+    <tag-friends-modal ref="tag_friends_modal" @hide="hideAndSelectTagFriends($event)" />
   </div>
 </template>
 
@@ -143,22 +126,90 @@
 import { Picker } from "emoji-mart-vue";
 import ThemePicker from "./ThemePicker";
 import FeelingActivityModal from "./FeelingActivityModal";
-import Twemoji from "twemoji";
+import TagFriendsModal from "./TagFriendsModal";
+
+let FeelingActivityMixin = {
+  data() {
+    return {
+      feeling: null,
+      activity: null,
+    };
+  },
+  methods: {
+    showFeelingActivityModal() {
+      window.$(this.$refs.feeling_activity_modal.$el).modal("show");
+      window.$(this.$refs.modal).modal("hide");
+    },
+    hideFeelingActivityModal() {
+      window.$(this.$refs.feeling_activity_modal.$el).modal("hide");
+      window.$(this.$refs.modal).modal("show");
+    },
+    hideAndSelectFeelingActivity({ type, data } = {}) {
+      this.hideFeelingActivityModal();
+      if (type == "feeling") {
+        return this.selectFeeling(data);
+      }
+
+      if (type == "activity") {
+        return this.selectActivity(data);
+      }
+    },
+    selectFeeling(feeling) {
+      this.feeling = feeling;
+      this.activity = null;
+    },
+    selectActivity(activity) {
+      this.activity = activity;
+      this.feeling = null;
+    },
+  },
+};
+
+let TagFriendsMixin = {
+  data() {
+    return {
+      tagged: {},
+    };
+  },
+  computed: {
+    tagged_names() {
+      let names = [];
+      for (let friend_id in this.tagged) {
+        names.push(this.tagged[friend_id].name);
+      }
+      return names;
+    },
+  },
+  methods: {
+    showTagFriendsModal() {
+      window.$(this.$refs.tag_friends_modal.$el).modal("show");
+      window.$(this.$refs.modal).modal("hide");
+    },
+    hideTagFriendsModal() {
+      window.$(this.$refs.tag_friends_modal.$el).modal("hide");
+      window.$(this.$refs.modal).modal("show");
+    },
+    hideAndSelectTagFriends(tagged = {}) {
+      this.hideTagFriendsModal();
+      this.tagged = Object.assign({}, tagged);
+    },
+  },
+};
 
 export default {
   components: {
     Picker,
     ThemePicker,
     FeelingActivityModal,
+    TagFriendsModal,
   },
+  mixins: [FeelingActivityMixin, TagFriendsMixin],
   data() {
     return {
       pick_emoji: false,
       pick_theme: false,
       text: "",
       theme: null,
-      feeling: null,
-      activity: null,
       audience_type: "public",
     };
   },
@@ -198,24 +249,6 @@ export default {
     },
     removeClickEventListenerOnRootDiv() {
       this.$refs.add_post_component.removeEventListener("click");
-    },
-    showFeelingActivityModal() {
-      window.$(this.$refs.feeling_activity_modal.$el).modal("show");
-      window.$(this.$refs.modal).modal("hide");
-    },
-    hideFeelingActivityModal() {
-      window.$(this.$refs.feeling_activity_modal.$el).modal("hide");
-      window.$(this.$refs.modal).modal("show");
-    },
-    selectFeeling(feeling) {
-      this.feeling = feeling;
-      this.activity = null;
-      this.hideFeelingActivityModal();
-    },
-    selectActivity(activity) {
-      this.activity = activity;
-      this.feeling = null;
-      this.hideFeelingActivityModal();
     },
   },
 };
@@ -333,7 +366,7 @@ export default {
       }
       .emoji {
         > span {
-          font-size: 1.5rem;
+          font-size: 1.7rem;
         }
         span {
           cursor: pointer;
@@ -345,13 +378,25 @@ export default {
         border: 1px solid #eee;
         border-radius: 7px;
         .actions {
+          font-size: 1.5rem;
           .feeling-activity {
             vertical-align: middle;
-            font-size: 1.6rem;
-            color: #f8c64e;
             cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            color: #f8c64e;
             &:hover {
               color: #ecb73a;
+            }
+          }
+          .tag-friends {
+            vertical-align: middle;
+            cursor: pointer;
+            margin-left: 5px;
+            margin-right: 5px;
+            color: #1877f2;
+            &:hover {
+              color: #176edf;
             }
           }
         }

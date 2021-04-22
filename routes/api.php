@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FriendController;
 use App\Http\Controllers\PostActivityController;
 use App\Http\Controllers\PostFeelingController;
 use App\Http\Controllers\PostThemeController;
@@ -17,8 +18,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('user')->middleware('auth:api')->group(function () {
+    Route::get('/', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('/friends', [FriendController::class,'fetch']);
 });
 
 Route::prefix('posts')->group(function () {

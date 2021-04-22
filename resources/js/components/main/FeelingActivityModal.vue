@@ -6,9 +6,7 @@
           <button class="close" @click="$emit('hide')">
             <i class="fas fa-arrow-left" style="font-size: 1.2rem"></i>
           </button>
-          <h5 class="modal-title font-weight-bold text-center flex-grow-1">
-            Feeling/Activity
-          </h5>
+          <h5 class="modal-title font-weight-bold text-center flex-grow-1">Feeling/Activity</h5>
         </div>
         <div class="modal-body p-0">
           <div class="d-flex">
@@ -43,7 +41,7 @@
               <template v-for="(feeling, index) in filtered_feelings">
                 <div
                   class="col-md-6"
-                  @click="$emit('selectFeeling', feeling)"
+                  @click="$emit('hide', { type: 'feeling', data: feeling })"
                   :key="index"
                 >
                   <div class="single-feeling p-1">
@@ -60,10 +58,7 @@
               <div class="d-flex align-items-center mx-2">
                 <span class="selected-activity">
                   {{ selected_activity.name | capitalize }}...
-                  <i
-                    class="fas fa-times mx-1"
-                    @click="selected_activity = null"
-                  ></i>
+                  <i class="fas fa-times mx-1" @click="selected_activity = null"></i>
                 </span>
                 <div class="search flex-grow-1">
                   <i class="fas fa-search mx-2"></i>
@@ -81,7 +76,7 @@
                   <div
                     class="single-activity col-md-6 p-1"
                     :key="index"
-                    @click="$emit('selectActivity', activity)"
+                    @click="$emit('hide', { type: 'activity', data: activity })"
                   >
                     <img :src="activity.icon" class="img-fluid" />
                     {{ activity.name }}
@@ -144,11 +139,7 @@ export default {
 
       let computed_feelings = [];
       for (let feeling of this.feelings) {
-        if (
-          feeling.name
-            .toLowerCase()
-            .includes(this.search_feelings.toLowerCase())
-        ) {
+        if (feeling.name.toLowerCase().includes(this.search_feelings.toLowerCase())) {
           computed_feelings.push(feeling);
         }
       }

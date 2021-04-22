@@ -21,7 +21,7 @@ class PostThemeFactory extends Factory
      */
     public function definition()
     {
-        $random = rand(0,1000);
+        $random = rand(0,100);
         return [
             'color'=>$this->faker->hexColor,
             'background_url'=>"https://picsum.photos/id/$random/600/600"
