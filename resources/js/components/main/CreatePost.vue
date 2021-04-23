@@ -31,14 +31,16 @@
               <div>
                 <p class="mb-0">
                   {{ $store.state.user.me.name | capitalize }}
-                  <span v-if="feeling">{{ `is ${feeling.icon} feeling ${feeling.name}` }}</span>
-                  <span v-if="activity">
+                  <span v-if="Object.keys(feeling).length">
+                    {{ `is ${feeling.icon} feeling ${feeling.name}` }}
+                  </span>
+                  <span v-if="Object.keys(activity).length">
                     is
                     <img :src="activity.icon" style="height: 20px; margin: 0px" />
                     {{ `${activity.parent_name} ${activity.name}` }}
                   </span>
 
-                  <span v-if="Object.keys(tagged).length > 0"
+                  <span v-if="Object.keys(tagged).length"
                     >with
                     <span>{{ tagged_names.join(", ") }}</span>
                   </span>
@@ -56,8 +58,10 @@
                   ref="text"
                   class="text"
                   contenteditable="true"
+                  v-text="text"
+                  @blur="text = $event.target.innerText"
                   :data-placeholder="welcome_question"
-                />
+                ></div>
                 <div class="gif-container" v-if="Object.keys(gif).length">
                   <span @click="gif = {}">X</span>
                   <img :src="gif.gif_url" style="width: 100%" />
@@ -90,7 +94,7 @@
                   }"
                   @select="selectEmoji"
                 />
-                <span @click="pick_emoji = !pick_emoji"><i class="far fa-grin" /></span>
+                <span @click="showEmojiPopup()"><i class="far fa-grin" /></span>
               </div>
             </div>
             <div class="add-to-your-post">
@@ -119,8 +123,14 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Save changes</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button
+              @click="savePost()"
+              type="button"
+              class="btn btn-primary w-100"
+              :disabled="!isValidPost()"
+            >
+              Post
+            </button>
           </div>
         </div>
       </div>
@@ -147,8 +157,8 @@ import GifModal from "./GifModal";
 let FeelingActivityMixin = {
   data() {
     return {
-      feeling: null,
-      activity: null,
+      feeling: {},
+      activity: {},
     };
   },
   methods: {
@@ -172,11 +182,11 @@ let FeelingActivityMixin = {
     },
     selectFeeling(feeling) {
       this.feeling = feeling;
-      this.activity = null;
+      this.activity = {};
     },
     selectActivity(activity) {
       this.activity = activity;
-      this.feeling = null;
+      this.feeling = {};
     },
   },
 };
@@ -208,6 +218,13 @@ let TagFriendsMixin = {
     hideAndSelectTagFriends(tagged = {}) {
       this.hideTagFriendsModal();
       this.tagged = tagged;
+    },
+    getTaggedIds() {
+      let ids = [];
+      for (let tagged_id in this.tagged) {
+        ids.push(tagged_id);
+      }
+      return ids;
     },
   },
 };
@@ -272,8 +289,11 @@ export default {
     showModal() {
       window.$(this.$refs.modal).modal("show");
     },
+    showEmojiPopup() {
+      this.pick_emoji = !this.pick_emoji;
+    },
     selectEmoji(emoji) {
-      this.$refs.text.innerText += emoji.native;
+      this.text += emoji.native;
     },
     hideEmojiPopupOnClickOutside() {
       window.$(this.$refs.add_post_component).click(() => {
@@ -300,11 +320,57 @@ export default {
         return Object.keys(this.gif).length;
       }
     },
+    isValidPost() {
+      return this.text.length;
+    },
+    savePost() {
+      if (!this.isValidPost()) {
+        return window.toastr.error("Post is Not Valid");
+      }
+
+      let post = {
+        text: this.text,
+        audience_type: this.audience_type,
+        theme_id: this.theme.id,
+        feeling_id: this.feeling.id,
+        activity_id: this.activity.id,
+        gif_id: this.gif.id,
+        tagged: this.getTaggedIds(),
+      };
+
+      window.axios.post("/api/posts", post).then((response) => {
+        if (response.data.success) {
+          window.toastr.success(response.data.success);
+        }
+
+        if (response.data.error) {
+          window.toastr.error(response.data.error);
+        }
+      });
+    },
   },
 };
 </script>
 
 <style lang="scss">
+@mixin scroll_style {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
 .add-post-component {
   .add-post {
     background: white;
@@ -378,32 +444,23 @@ export default {
         height: 180px;
         overflow-x: hidden;
         overflow-y: auto;
-        &::-webkit-scrollbar {
-          width: 5px;
-        }
-
-        &::-webkit-scrollbar-track {
-          background: #f1f1f1;
-        }
-
-        &::-webkit-scrollbar-thumb {
-          background: #888;
-        }
-
-        &::-webkit-scrollbar-thumb:hover {
-          background: #555;
-        }
+        @include scroll_style;
         .theme {
           color: #65676b;
           .text {
+            border: 0px;
+            background: transparent;
             outline: none;
             overflow-y: auto;
             font-size: 1.7rem;
+            width: 100%;
+            resize: none;
             &[contenteditable="true"]:empty:before {
               content: attr(data-placeholder);
               font-weight: bold;
               letter-spacing: 1px;
             }
+            @include scroll_style;
             img.emoji {
               height: 1em;
               width: 1em;
@@ -494,6 +551,14 @@ export default {
       font-size: 1.9rem;
       margin-left: 3px;
       margin-right: 3px;
+    }
+    .modal-footer {
+      button[disabled],
+      button:disabled {
+        background: gray;
+        border: gray;
+        cursor: not-allowed;
+      }
     }
   }
 }

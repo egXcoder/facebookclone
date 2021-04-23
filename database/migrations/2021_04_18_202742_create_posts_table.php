@@ -17,7 +17,7 @@ class CreatePostsTable extends Migration
             $table->id();
             $table->text('text');
             $table->string('audience_type')->nullable();
-            $table->morphs('doingable');
+            $table->nullableMorphs('doingable');
             $table->bigInteger('theme_id')->unsigned()->nullable();
             $table->bigInteger('gif_id')->unsigned()->nullable();
             $table->timestamps();

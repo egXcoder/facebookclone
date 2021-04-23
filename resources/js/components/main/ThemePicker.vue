@@ -11,10 +11,7 @@
 
       <div class="flex-grow-1 overflow-hidden">
         <div class="d-flex themes-container" ref="themes" :style="slidingStyle">
-          <div
-            class="theme-icon transparent"
-            @click="$emit('setTheme', {})"
-          ></div>
+          <div class="theme-icon transparent" @click="$emit('setTheme', {})"></div>
           <template v-for="(theme, index) in themes">
             <img
               class="theme-icon img-fluid"
@@ -53,6 +50,7 @@ export default {
     },
     buildTheme(theme) {
       let builtTheme = {
+        id: theme.id,
         width: "500px",
         height: "500px",
         "background-size": "cover",
@@ -74,7 +72,7 @@ export default {
       return builtTheme;
     },
     next() {
-      if(this.isSliderAtEnd()){
+      if (this.isSliderAtEnd()) {
         return;
       }
       this.currentTranslateValue -= 50;
@@ -83,7 +81,7 @@ export default {
       };
     },
     prev() {
-      if(this.isSliderAtStart()){
+      if (this.isSliderAtStart()) {
         return;
       }
 
@@ -92,13 +90,13 @@ export default {
         transform: `translateX(${this.currentTranslateValue}px)`,
       };
     },
-    isSliderAtStart(){
-      return this.currentTranslateValue>=0;
+    isSliderAtStart() {
+      return this.currentTranslateValue >= 0;
     },
-    isSliderAtEnd(){
+    isSliderAtEnd() {
       let maxScrollableWidth = this.$refs.themes.scrollWidth - this.$refs.themes.offsetWidth;
-      return (this.currentTranslateValue + maxScrollableWidth) <= 0;
-    }
+      return this.currentTranslateValue + maxScrollableWidth <= 0;
+    },
   },
 };
 </script>

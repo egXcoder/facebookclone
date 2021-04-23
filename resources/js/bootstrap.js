@@ -13,18 +13,32 @@ try {
     window.$ = window.jQuery = require('jquery');
 
     require('bootstrap');
-} catch (e) {}
+} catch (e) { }
+
+
+window.toastr = require('toastr');
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests
  * to our Laravel back-end. This library automatically handles sending the
  * CSRF token as a header based on the value of the "XSRF" token cookie.
  */
-
 window.axios = require('axios');
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + window.getCookie('api_token');
-
+window.axios.interceptors.response.use(undefined, function (error) {
+    //on validation error toast them
+    if (error.response.status == 422) {
+        let data = error.response.data;
+        if (data.errors) {
+            for (let attribute in data.errors) {
+                for (let error of data.errors[attribute]) {
+                    window.toastr.error(error);
+                }
+            }
+        }
+    }
+});
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

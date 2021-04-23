@@ -3,6 +3,7 @@
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GifController;
 use App\Http\Controllers\PostActivityController;
+use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostFeelingController;
 use App\Http\Controllers\PostThemeController;
 use Illuminate\Http\Request;
@@ -27,9 +28,11 @@ Route::prefix('user')->middleware('auth:api')->group(function () {
     Route::get('/friends', [FriendController::class,'fetch']);
 });
 
-Route::prefix('posts')->group(function () {
+Route::prefix('posts')->middleware('auth:api')->group(function () {
     Route::get('/themes', [PostThemeController::class,'fetch']);
     Route::get('/feelings', [PostFeelingController::class,'fetch']);
     Route::get('/activities', [PostActivityController::class,'fetch']);
     Route::get('/gifs', [GifController::class,'fetch']);
+
+    Route::post('/', [PostController::class,'store']);
 });

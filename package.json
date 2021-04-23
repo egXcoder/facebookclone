@@ -29,6 +29,7 @@
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.15.3",
         "emoji-mart-vue": "^2.6.6",
+        "toastr": "^2.1.4",
         "twemoji": "^13.0.2",
         "vue-router": "^3.5.1",
         "vuex": "^3.6.2"

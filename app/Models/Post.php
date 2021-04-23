@@ -9,9 +9,11 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function tagged_users()
     {
-        return $this->belongsToMany(User::class, "tagged_users", "post_id", "user_id");
+        return $this->belongsToMany(User::class, "tagged_users", "post_id", "user_id")->withTimestamps();
     }
 
     public function doingable()
