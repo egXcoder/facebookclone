@@ -12,6 +12,15 @@ class EncryptCookies extends Middleware
      * @var array
      */
     protected $except = [
-        'api_token'
+        'api_token',
     ];
+
+    public function isDisabled($name)
+    {
+        if (app()->runningUnitTests()) {
+            return true;    // Disable cookies encryption/decryption during unit testing
+        }
+
+        return parent::isDisabled($name);
+    }
 }

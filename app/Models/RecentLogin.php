@@ -11,6 +11,10 @@ class RecentLogin extends Model
 {
     use HasFactory,RecentLoginInCookie;
 
+    protected $casts= [
+        'is_deleted'=>'boolean'
+    ];
+
     public const DAYS_FOR_RECENT_LOGIN_TO_BE_VALID = 10;
 
     protected $guarded = [];
@@ -32,18 +36,12 @@ class RecentLogin extends Model
     {
         return $this->isValidToShow() &&
         $this->checkIfSameFingerprint(request('fingerprint')) &&
-        !$this->isConsumed() &&
         !$this->isCreatedFromLongTime();
     }
 
     public function isValidToShow()
     {
         return $this->user && !$this->is_deleted;
-    }
-
-    protected function isConsumed()
-    {
-        return $this->generated_recent_id;
     }
 
     protected function checkIfSameFingerprint(String $fingerprint)
@@ -56,19 +54,6 @@ class RecentLogin extends Model
         if ($this->created_at->diffInDays(Carbon::now())>self::DAYS_FOR_RECENT_LOGIN_TO_BE_VALID) {
             return true;
         }
-    }
-
-    public function consumeAndGenerateNewInstance()
-    {
-        $new_recent = self::createFromRequest([
-           'user_id'=>$this->user_id
-       ]);
-
-        $this->update([
-           'generated_recent_id' => $new_recent->id
-       ]);
-
-        return $new_recent;
     }
 
     public function user()

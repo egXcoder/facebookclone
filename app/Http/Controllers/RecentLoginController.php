@@ -14,9 +14,6 @@ class RecentLoginController extends Controller
         if ($recent->token == request('token')) {
             if($recent->isValidToLogin()){
                 Auth::guard()->login($recent->user, true);
-                $new_recent = $recent->consumeAndGenerateNewInstance();
-                RecentLogin::AddNewRecentLoginToCookie($new_recent);
-                request()->session()->regenerate();
                 return redirect()->intended(RouteServiceProvider::HOME);
             }
 

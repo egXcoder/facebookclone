@@ -20,12 +20,10 @@ class CreateRecentLoginsTable extends Migration
             $table->ipAddress('ip');
             $table->string('user_agent');
             $table->string('fingerprint');
-            $table->bigInteger('generated_recent_id')->nullable()->unsigned();
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('Cascade');
-            $table->foreign('generated_recent_id')->references('id')->on('recent_logins')->onDelete('Cascade');
         });
     }
 

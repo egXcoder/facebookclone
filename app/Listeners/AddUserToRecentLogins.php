@@ -25,9 +25,7 @@ class AddUserToRecentLogins
      */
     public function handle(Login $event)
     {
-        if ($this->isRecentLoginForUserAlreadyInCookie($event->user)) {
-            return;
-        }
+        $this->deleteRecentLogins($event->user);
 
         $recent = RecentLogin::createFromRequest([
             'user_id'=>$event->user->id
@@ -36,8 +34,10 @@ class AddUserToRecentLogins
         RecentLogin::AddNewRecentLoginToCookie($recent);
     }
 
-    protected function isRecentLoginForUserAlreadyInCookie($user)
+    protected function deleteRecentLogins($user)
     {
-        return array_key_exists($user->id, RecentLogin::getRecentLoginsFromCookie());
+        RecentLogin::where('user_id', $user->id)->update([
+            'is_deleted'=>true,
+        ]);
     }
 }
