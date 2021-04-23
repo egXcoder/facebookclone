@@ -9,6 +9,8 @@ class PostActivity extends Model
 {
     use HasFactory;
 
+    protected $guarded = [];
+
     public function children()
     {
         return $this->hasMany(self::class,"parent_id","id");
