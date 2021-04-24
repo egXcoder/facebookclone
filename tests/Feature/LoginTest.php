@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Listeners\AddUserToRecentLogins;
+use App\Listeners\RegenerateRecentLogin;
 use App\Listeners\SetApiTokenForAuthenticatedUser;
 use App\Models\RecentLogin;
 use App\Models\User;
@@ -52,10 +53,10 @@ class LoginTest extends TestCase
     }
 
     /** @test */
-    public function user_login_will_trigger_setapitoken_and_addrecentlogin()
+    public function user_login_will_trigger_setApiToken_and_regenerateRecentLogin()
     {
         $setApiTokenListener = $this->replaceEventListenerWithMock(SetApiTokenForAuthenticatedUser::class);
-        $addUserRecentLogin = $this->replaceEventListenerWithMock(AddUserToRecentLogins::class);
+        $addUserRecentLogin = $this->replaceEventListenerWithMock(RegenerateRecentLogin::class);
 
         $this->post('/login', [
             'email'=>$this->user->email,
@@ -205,7 +206,16 @@ class LoginTest extends TestCase
     }
 
     /**@test */
-    public function when_session_finish()
-    {
-    }
+    // public function when_session_finish()
+    // {
+    //     $loginInformation = [
+    //         'email'=>$this->user->email,
+    //         'password'=>'123',
+    //         'user_agent'=>app(Generator::class)->userAgent,
+    //         'fingerprint'=>'123456'
+    //     ];
+        
+    //     $this->post('/login', $loginInformation);
+    //     $this->regenerate
+    // }
 }

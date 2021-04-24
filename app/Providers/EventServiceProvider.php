@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Listeners\AddUserToRecentLogins;
 use App\Listeners\ClearApiTokenForAuthenticatedUser;
+use App\Listeners\RegenerateRecentLogin;
 use App\Listeners\SetApiTokenForAuthenticatedUser;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
@@ -25,7 +25,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class=>[
             SetApiTokenForAuthenticatedUser::class,
-            AddUserToRecentLogins::class
+            RegenerateRecentLogin::class
         ],
         Logout::class=>[
             ClearApiTokenForAuthenticatedUser::class
