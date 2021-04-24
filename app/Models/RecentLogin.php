@@ -27,7 +27,7 @@ class RecentLogin extends Model
                 'token'=>\Illuminate\Support\Str::random(60),
                 'ip'=>  request()->server('REMOTE_ADDR'),
                 'fingerprint'=>request('fingerprint'),
-                'user_agent'=>request('user_agent'),
+                'user_agent'=>request()->server('HTTP_USER_AGENT'),
             ], $parameters)
         );
     }

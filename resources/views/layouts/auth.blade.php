@@ -106,11 +106,9 @@
     <script>
         let client = new ClientJS();
         let fingerprint = client.getCustomFingerprint(client.getOS(),client.getOSVersion(),client.getCPU(),client.getScreenPrint());
-        let user_agent = client.getUserAgent();
         let fingerprint_element = "<input type='hidden' name='fingerprint' value='"+fingerprint+"'>";
         let user_agent_element = "<input type='hidden' name='user_agent' value='"+user_agent+"'>";
         $("form#login,form#register,form.recent-login").prepend(fingerprint_element);
-        $("form#login,form#register,form.recent-login").prepend(user_agent_element);
     </script>
 
     @yield('js')
