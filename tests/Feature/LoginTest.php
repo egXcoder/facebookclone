@@ -204,18 +204,4 @@ class LoginTest extends TestCase
         $this->assertTrue(RecentLogin::find(1)->is_deleted);
         $this->assertFalse(RecentLogin::find(2)->is_deleted);
     }
-
-    /**@test */
-    // public function when_session_finish()
-    // {
-    //     $loginInformation = [
-    //         'email'=>$this->user->email,
-    //         'password'=>'123',
-    //         'user_agent'=>app(Generator::class)->userAgent,
-    //         'fingerprint'=>'123456'
-    //     ];
-        
-    //     $this->post('/login', $loginInformation);
-    //     $this->regenerate
-    // }
 }
