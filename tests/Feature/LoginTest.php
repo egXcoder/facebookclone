@@ -18,14 +18,26 @@ class LoginTest extends TestCase
 {
     use DatabaseMigrations;
 
+    protected $user;
+    
+    /**
+     * Setup the test environment.
+     *
+     * @return void
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = User::factory()->create([
+            'password'=>Hash::make(123)
+        ]);
+    }
+
     /** @test */
     public function new_user_doesnt_have_api_token()
     {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-
-        $this->assertNull($user->api_token);
+        $this->assertNull($this->user->api_token);
     }
 
     /** @test */
@@ -33,12 +45,8 @@ class LoginTest extends TestCase
     {
         $this->expectsEvents(Login::class);
 
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-        
         $this->post('/login', [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123'
         ]);
     }
@@ -49,12 +57,8 @@ class LoginTest extends TestCase
         $setApiTokenListener = $this->replaceEventListenerWithMock(SetApiTokenForAuthenticatedUser::class);
         $addUserRecentLogin = $this->replaceEventListenerWithMock(AddUserToRecentLogins::class);
 
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-        
         $this->post('/login', [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123'
         ]);
 
@@ -71,29 +75,21 @@ class LoginTest extends TestCase
 
     /** @test */
     public function user_login_will_set_api_token()
-    {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-        
+    {   
         $this->post('/login', [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123'
         ]);
 
-        $user->refresh();
-        $this->assertIsString($user->api_token);
+        $this->user->refresh();
+        $this->assertIsString($this->user->api_token);
     }
 
     /** @test */
     public function user_login_will_insert_recent_login_record()
     {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-        
         $this->post('/login', [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123',
             'user_agent'=>app(Generator::class)->userAgent,
             'fingerprint'=>'123456'
@@ -105,18 +101,14 @@ class LoginTest extends TestCase
     /** @test */
     public function user_login_sets_recent_login_in_cookie()
     {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-        
         $response = $this->post('/login', [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123',
             'user_agent'=>app(Generator::class)->userAgent,
             'fingerprint'=>'123456'
         ]);
 
-        $response->assertCookie('recent_logins', json_encode([$user->id=>RecentLogin::first()->token]), false);
+        $response->assertCookie('recent_logins', json_encode([$this->user->id=>RecentLogin::first()->token]), false);
     }
 
     /** @test */
@@ -146,12 +138,8 @@ class LoginTest extends TestCase
     /** @test */
     public function user_can_only_have_only_one_valid_recent_login_on_relogin()
     {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-
         $loginInformation = [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123',
             'user_agent'=>app(Generator::class)->userAgent,
             'fingerprint'=>'123456'
@@ -169,12 +157,8 @@ class LoginTest extends TestCase
     /** @test */
     public function user_can_login_with_recent_login()
     {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-
         $loginInformation = [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123',
             'user_agent'=>app(Generator::class)->userAgent,
             'fingerprint'=>'123456'
@@ -191,7 +175,7 @@ class LoginTest extends TestCase
         ]);
 
         $response->assertRedirect(RouteServiceProvider::HOME);
-        $this->assertCount(2,RecentLogin::all());
+        $this->assertCount(2, RecentLogin::all());
         $this->assertTrue(RecentLogin::find(1)->is_deleted);
         $this->assertFalse(RecentLogin::find(2)->is_deleted);
     }
@@ -199,12 +183,8 @@ class LoginTest extends TestCase
     /** @test */
     public function when_user_use_recent_login_it_will_generate_new_record()
     {
-        $user = User::factory()->create([
-            'password'=>Hash::make(123)
-        ]);
-
         $loginInformation = [
-            'email'=>$user->email,
+            'email'=>$this->user->email,
             'password'=>'123',
             'user_agent'=>app(Generator::class)->userAgent,
             'fingerprint'=>'123456'
@@ -219,8 +199,13 @@ class LoginTest extends TestCase
             'user_agent'=>app(Generator::class)->userAgent,
             'fingerprint'=>$recent->fingerprint
         ]);
-        $this->assertCount(2,RecentLogin::all());
+        $this->assertCount(2, RecentLogin::all());
         $this->assertTrue(RecentLogin::find(1)->is_deleted);
         $this->assertFalse(RecentLogin::find(2)->is_deleted);
+    }
+
+    /**@test */
+    public function when_session_finish()
+    {
     }
 }
