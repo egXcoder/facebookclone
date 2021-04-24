@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Post;
 use App\Models\PostActivity;
 use App\Models\PostFeeling;
+use App\Rules\ProhibitedIfExists;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
@@ -14,10 +15,10 @@ class PostController extends Controller
         $this->validate(request(), [
             'text'=>'required|string|max:1024',
             'audience_type'=>'required|in:public,friends,only_me',
-            'theme_id'=>'numeric|exists:post_themes,id',
-            'feeling_id'=>'numeric|exists:post_feelings,id',
-            'activity_id'=>'numeric|exists:post_activities,id',
-            'gif_id'=>'numeric|exists:post_gifs,id',
+            'theme_id'=>['numeric','exists:post_themes,id',new ProhibitedIfExists('gif_id')],
+            'feeling_id'=>['numeric','exists:post_feelings,id',new ProhibitedIfExists('activity_id')],
+            'activity_id'=>['numeric','exists:post_activities,id',new ProhibitedIfExists('feeling_id')],
+            'gif_id'=>['numeric','exists:post_gifs,id',new ProhibitedIfExists('theme_id')],
             'tagged'=>['array',function ($attribute, $tagged, $fail) {
                 //make sure all tagged_ids in db
                 foreach ($tagged as $tagged_id) {
