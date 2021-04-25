@@ -20,6 +20,7 @@ class CreatePostsTable extends Migration
             $table->nullableMorphs('doingable');
             $table->bigInteger('theme_id')->unsigned()->nullable();
             $table->bigInteger('gif_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('author_id');
             $table->timestamps();
         });
     }

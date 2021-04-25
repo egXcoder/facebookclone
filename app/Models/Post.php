@@ -11,6 +11,11 @@ class Post extends Model
 
     protected $guarded = [];
 
+    public function author()
+    {
+        return $this->belongsTo(User::class, "author_id");
+    }
+    
     public function tagged_users()
     {
         return $this->belongsToMany(User::class, "tagged_users", "post_id", "user_id")->withTimestamps();
