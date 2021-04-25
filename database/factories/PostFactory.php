@@ -9,6 +9,9 @@ use App\Models\PostGif;
 use App\Models\PostTheme;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Arr;
+use ReflectionClass;
+use ReflectionMethod;
 
 class PostFactory extends Factory
 {
@@ -18,8 +21,19 @@ class PostFactory extends Factory
      * @var string
      */
     protected $model = Post::class;
+    
+    protected static $featuresList;
 
     protected $withTagged = false;
+
+    public function __construct()
+    {
+        parent::__construct(...func_get_args());
+
+        if (!self::$featuresList) {
+            self::$featuresList = self::extractFeatures();
+        }
+    }
 
     /**
      * Define the model's default state.
@@ -96,7 +110,7 @@ class PostFactory extends Factory
     {
         return $this->state(function (array $attributes) {
             return [
-                'text'=>$attributes['text'] + join(' ', PostFeeling::inRandomOrder()->pluck('icon')->toArray()),
+                'text'=>$attributes['text'] . ' ' . join(' ', PostFeeling::inRandomOrder()->pluck('icon')->toArray()),
             ];
         });
     }
@@ -105,5 +119,31 @@ class PostFactory extends Factory
     {
         $this->withTagged = true;
         return $this;
+    }
+
+    protected static function extractFeatures()
+    {
+        return collect(
+            (new ReflectionClass(self::class))
+            ->getMethods(ReflectionMethod::IS_PUBLIC)
+        )
+        ->filter(function (ReflectionMethod $reflectionMethod) {
+            return str_contains($reflectionMethod->getName(), 'with');
+        })
+        ->toArray();
+    }
+
+    public function chainFeatures()
+    {
+        //i am using $obj = $this , because $this is immutable when we call $this->state() on it
+        //so by calling for example $this->withTheme() .. it will call $this->withState()
+        //which is going to create totally_new_object so i needed to track the recent object created
+        //by using a variable
+        
+        $obj = $this;
+        for ($i=0;$i<=array_rand(self::$featuresList);$i++) {
+            $obj = app()->call([$this,Arr::random(self::$featuresList)->getName()]);
+        }
+        return $obj;
     }
 }

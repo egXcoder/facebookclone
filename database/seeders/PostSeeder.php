@@ -15,15 +15,12 @@ class PostSeeder extends Seeder
      */
     public function run()
     {
-        $users = User::all();
-        foreach($users as $user){
-            $author_meta = ['author_id'=>$user->id];
-            Post::factory(8)->create($author_meta);
-            Post::factory(4)->withTheme()->create($author_meta);
-            Post::factory(3)->withGif()->create($author_meta);
-            Post::factory(4)->withFeeling()->create($author_meta);
-            Post::factory(5)->withActivity()->create($author_meta);
-            Post::factory(4)->withTagged()->create($author_meta);
+        foreach (User::all() as $user) {
+            $post_factory = Post::factory(5);
+            for ($i=0;$i<=4;$i++) {
+                $post_factory->chainFeatures()
+                    ->create(['author_id'=>$user->id]);
+            }
         }
     }
 }
