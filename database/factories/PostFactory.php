@@ -22,18 +22,7 @@ class PostFactory extends Factory
      */
     protected $model = Post::class;
     
-    protected static $featuresList;
-
     protected $withTagged = false;
-
-    public function __construct()
-    {
-        parent::__construct(...func_get_args());
-
-        if (!self::$featuresList) {
-            self::$featuresList = self::extractFeatures();
-        }
-    }
 
     /**
      * Define the model's default state.
@@ -121,6 +110,9 @@ class PostFactory extends Factory
         return $this;
     }
 
+    /**
+     * extract features by scanning class and return public methods which start with 'with'
+     */
     protected static function extractFeatures()
     {
         return collect(
@@ -135,14 +127,15 @@ class PostFactory extends Factory
 
     public function chainFeatures()
     {
+        $featuresList = self::extractFeatures();
+
         //i am using $obj = $this , because $this is immutable when we call $this->state() on it
         //so by calling for example $this->withTheme() .. it will call $this->withState()
         //which is going to create totally_new_object so i needed to track the recent object created
         //by using a variable
-        
         $obj = $this;
-        for ($i=0;$i<=array_rand(self::$featuresList);$i++) {
-            $obj = app()->call([$this,Arr::random(self::$featuresList)->getName()]);
+        for ($i=0;$i<=array_rand($featuresList);$i++) {
+            $obj = app()->call([$this,Arr::random($featuresList)->getName()]);
         }
         return $obj;
     }
