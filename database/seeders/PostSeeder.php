@@ -16,8 +16,8 @@ class PostSeeder extends Seeder
     public function run()
     {
         foreach (User::all() as $user) {
-            $post_factory = Post::factory(5);
-            for ($i=0;$i<=4;$i++) {
+            $post_factory = Post::factory(2);
+            for ($i=0;$i<=3;$i++) {
                 $post_factory->chainFeatures()
                     ->create(['user_id'=>$user->id]);
             }

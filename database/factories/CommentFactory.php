@@ -31,7 +31,7 @@ class CommentFactory extends Factory
         ];
     }
 
-    public function forUser($user_id)
+    public function forUser($user_id = null)
     {
         return $this->state(function ($attributes) use ($user_id) {
             return [
@@ -40,7 +40,7 @@ class CommentFactory extends Factory
         });
     }
 
-    public function forPost($post_id)
+    public function forPost($post_id = null)
     {
         return $this->state(function ($attributes) use ($post_id) {
             return [
@@ -50,7 +50,7 @@ class CommentFactory extends Factory
         });
     }
 
-    public function forComment($comment_id)
+    public function forComment($comment_id = null)
     {
         return $this->state(function ($attributes) use ($comment_id) {
             return [

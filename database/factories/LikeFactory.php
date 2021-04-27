@@ -53,7 +53,7 @@ class LikeFactory extends Factory
         });
     }
 
-    public function forUser($user_id){
+    public function forUser($user_id = null){
         return $this->state(function($attributes) use($user_id){
             return [
                 'user_id' => $user_id ?? User::inRandomOrder()->first('id')
