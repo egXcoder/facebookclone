@@ -15,9 +15,11 @@ class CreateUsersFriends extends Migration
     {
         Schema::create('users_friends', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('user_id')->unsigned();
-            $table->bigInteger('friend_id')->unsigned();
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('friend_id');
             $table->timestamps();
+            
+            $table->unique(['user_id','friend_id']);
         });
     }
 

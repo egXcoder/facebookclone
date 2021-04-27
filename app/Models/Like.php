@@ -11,6 +11,8 @@ class Like extends Model
 
     public const TYPES = ['like','love','care','haha','wow','sad','angry'];
 
+    protected $touches = ['likeable'];
+
     public function user()
     {
         return $this->belongsTo(User::class, "user_id");

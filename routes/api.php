@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GifController;
 use App\Http\Controllers\PostActivityController;
@@ -35,4 +36,6 @@ Route::prefix('posts')->middleware('auth:api')->group(function () {
     Route::get('/gifs', [GifController::class,'fetch']);
 
     Route::post('/', [PostController::class,'store']);
+
+    Route::get('/feed',[FeedController::class,'fetch']);
 });

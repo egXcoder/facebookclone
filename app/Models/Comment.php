@@ -9,6 +9,8 @@ class Comment extends Model
 {
     use HasFactory;
 
+    protected $touches = ['commentable'];
+
     /**
      * comment parent can be post or comment
      */

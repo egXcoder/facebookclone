@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </header>
-            <div style="position: relative;top:80px;">
+            <div style="position: relative;top:var(--top-header);">
                 <router-view></router-view>
                 <form action="{{route('logout')}}" method="post">
                     @csrf

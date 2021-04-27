@@ -9,6 +9,7 @@
       <div class="row justify-content-center">
         <div class="col-md-10">
           <create-post />
+          <infinite-post></infinite-post>
         </div>
       </div>
     </main>
@@ -20,12 +21,14 @@
 import Categories from "../widgets/Categories.vue";
 import Shortcuts from "./../widgets/Shortcuts";
 import CreatePost from "./CreatePost.vue";
+import InfinitePost from './InfinitePost';
 
 export default {
   components: {
     Shortcuts,
     Categories,
     CreatePost,
+    InfinitePost,
   },
   mounted() {
     console.log("Component mounted.");
@@ -35,5 +38,10 @@ export default {
 
 <style lang="scss" scoped>
 .home-screen {
+  aside.left{
+    position: sticky;
+    top:var(--top-header);
+    height: fit-content;
+  }
 }
 </style>
