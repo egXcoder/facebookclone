@@ -34,7 +34,7 @@ class PostFactory extends Factory
         return [
             'text'=>$this->faker->paragraph(6),
             'audience_type'=>'public',
-            'author_id'=>User::inRandomOrder()->first()->id
+            'user_id'=>User::inRandomOrder()->first()->id
         ];
     }
 

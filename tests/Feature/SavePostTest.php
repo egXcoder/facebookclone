@@ -10,9 +10,6 @@ use App\Models\User;
 use Database\Seeders\PostActivitySeeder;
 use Database\Seeders\PostFeelingSeeder;
 use Database\Seeders\PostGifSeeder;
-use Database\Seeders\PostThemeSeeder;
-use Database\Seeders\UserFriendSeeder;
-use Database\Seeders\UserSeeder;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\TestCase;
 
@@ -25,9 +22,6 @@ class SavePostTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-
-        $this->seed();
-
         $this->user = User::factory()->create();
         $this->actingAs($this->user, 'api');
     }
@@ -61,6 +55,8 @@ class SavePostTest extends TestCase
     /** @test */
     public function save_post_with_feeling()
     {
+       (new PostFeelingSeeder)->run();
+
         $this->postJson('/api/posts', [
             'text'=>'hello world',
             'audience_type'=>'public',
@@ -74,6 +70,8 @@ class SavePostTest extends TestCase
     /** @test */
     public function save_post_with_activity()
     {
+        (new PostActivitySeeder)->run();
+
         $this->postJson('/api/posts', [
             'text'=>'hello world',
             'audience_type'=>'public',
@@ -87,8 +85,6 @@ class SavePostTest extends TestCase
     /** @test */
     public function save_post_with_tagged_friends()
     {
-        
-
         $tagged = $this->user->friends()->pluck('friend_id')->toArray();
         $this->postJson('/api/posts', [
             'text'=>'hello world',
@@ -105,6 +101,8 @@ class SavePostTest extends TestCase
     /** @test */
     public function save_post_with_gifs()
     {
+        (new PostGifSeeder)->run();
+        
         $this->postJson('/api/posts', [
             'text'=>'hello world',
             'audience_type'=>'public',
@@ -115,7 +113,8 @@ class SavePostTest extends TestCase
     }
 
     /** @test */
-    public function post_cant_have_gif_and_theme_in_same_time(){
+    public function post_cant_have_gif_and_theme_in_same_time()
+    {
         $response = $this->postJson('/api/posts', [
             'text'=>'hello world',
             'audience_type'=>'public',
@@ -128,7 +127,8 @@ class SavePostTest extends TestCase
     }
 
     /** @test */
-    public function post_cant_have_feeling_and_activity_in_same_time(){
+    public function post_cant_have_feeling_and_activity_in_same_time()
+    {
         $response = $this->postJson('/api/posts', [
             'text'=>'hello world',
             'audience_type'=>'public',

@@ -61,6 +61,7 @@ class PostController extends Controller
                 'audience_type'=>request('audience_type'),
                 'theme_id'=>request('theme_id'),
                 'gif_id'=>request('gif_id'),
+                'user_id'=>auth('api')->user()->id
             ], $this->getPolymorphicArray()));
     
             $post->tagged_users()->sync(request('tagged'));

@@ -19,7 +19,7 @@ class PostSeeder extends Seeder
             $post_factory = Post::factory(5);
             for ($i=0;$i<=4;$i++) {
                 $post_factory->chainFeatures()
-                    ->create(['author_id'=>$user->id]);
+                    ->create(['user_id'=>$user->id]);
             }
         }
     }

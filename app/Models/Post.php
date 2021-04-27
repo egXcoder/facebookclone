@@ -11,9 +11,9 @@ class Post extends Model
 
     protected $guarded = [];
 
-    public function author()
+    public function user()
     {
-        return $this->belongsTo(User::class, "author_id");
+        return $this->belongsTo(User::class, "user_id");
     }
     
     public function tagged_users()
@@ -34,5 +34,15 @@ class Post extends Model
     public function theme()
     {
         return $this->belongsTo(PostTheme::class, "theme_id", "id");
+    }
+
+    public function likes()
+    {
+        return $this->morphMany(Like::class, "likeable");
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }
