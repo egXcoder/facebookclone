@@ -12,6 +12,7 @@ class FeedController extends Controller
     {
         $friends_id = auth('api')->user()->friends()->pluck('friend_id')->toArray();
         $posts = Post::whereIn('user_id', array_merge($friends_id, [auth('api')->user()->id]))
+            ->where('audience_type','<>','only_me')
             ->orderBy('updated_at', 'DESC')->get();
         return PostResource::collection($posts);
     }

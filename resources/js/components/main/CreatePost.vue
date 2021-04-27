@@ -372,6 +372,7 @@ export default {
 }
 
 .add-post-component {
+  margin-bottom: 1rem;
   .add-post {
     background: white;
     border-radius: 1rem;

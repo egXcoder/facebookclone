@@ -16,10 +16,12 @@ class PostSeeder extends Seeder
     public function run()
     {
         foreach (User::all() as $user) {
-            $post_factory = Post::factory(2);
-            for ($i=0;$i<=3;$i++) {
+            $post_factory = Post::factory();
+            for ($i=0;$i<=5;$i++) {
                 $post_factory->chainFeatures()
-                    ->create(['user_id'=>$user->id]);
+                    ->forUser($user->id)
+                    ->atRandomCreatedAt()
+                    ->create();
             }
         }
     }

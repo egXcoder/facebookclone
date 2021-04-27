@@ -33,8 +33,8 @@ class PostFactory extends Factory
     {
         return [
             'text'=>$this->faker->paragraph(6),
-            'audience_type'=>'public',
-            'user_id'=>User::inRandomOrder()->first()->id
+            'audience_type'=>Arr::random(Post::AUDIENCE_TYPE),
+            'user_id'=>User::inRandomOrder()->first()->id,
         ];
     }
 
@@ -110,19 +110,18 @@ class PostFactory extends Factory
         return $this;
     }
 
-    /**
-     * extract features by scanning class and return public methods which start with 'with'
-     */
-    protected static function extractFeatures()
+    public function forUser($user_id = null)
     {
-        return collect(
-            (new ReflectionClass(self::class))
-            ->getMethods(ReflectionMethod::IS_PUBLIC)
-        )
-        ->filter(function (ReflectionMethod $reflectionMethod) {
-            return str_contains($reflectionMethod->getName(), 'with');
-        })
-        ->toArray();
+        return $this->state(function ($attributes) use ($user_id) {
+            return ['user_id'=>$user_id];
+        });
+    }
+
+    public function atRandomCreatedAt()
+    {
+        return $this->state(function ($attributes) {
+            return ['created_at'=>$this->faker->dateTimeBetween('-1 years', 'now')];
+        });
     }
 
     public function chainFeatures()
@@ -138,5 +137,20 @@ class PostFactory extends Factory
             $obj = app()->call([$this,Arr::random($featuresList)->getName()]);
         }
         return $obj;
+    }
+
+    /**
+    * extract features by scanning class and return public methods which start with 'with'
+    */
+    protected static function extractFeatures()
+    {
+        return collect(
+            (new ReflectionClass(self::class))
+            ->getMethods(ReflectionMethod::IS_PUBLIC)
+        )
+        ->filter(function (ReflectionMethod $reflectionMethod) {
+            return str_contains($reflectionMethod->getName(), 'with');
+        })
+        ->toArray();
     }
 }
