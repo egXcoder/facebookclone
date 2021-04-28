@@ -4611,6 +4611,7 @@ readers do not read off random characters that represent icons */
 @charset "UTF-8";
 
 :root {
+  --primary-color: #1877f2;
   --top-header: 80px;
   --blue-link: #216fdb;
   --accent: #e7f3ff;

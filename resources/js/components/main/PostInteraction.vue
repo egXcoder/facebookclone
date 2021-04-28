@@ -2,7 +2,16 @@
   <div class="post-interaction">
     <template v-if="likes.length || comments.length">
       <div class="interaction-details px-4 py-2">
-        <div class="likes">Likes {{ likes.length }}</div>
+        <div class="likes">
+          <template v-if="likesCategorized.like && likesCategorized.like.length">👍</template>
+          <template v-if="likesCategorized.love && likesCategorized.love.length">❤️</template>
+          <template v-if="likesCategorized.care && likesCategorized.care.length">🥰</template>
+          <template v-if="likesCategorized.haha && likesCategorized.haha.length">😂</template>
+          <template v-if="likesCategorized.wow && likesCategorized.wow.length">😯</template>
+          <template v-if="likesCategorized.sad && likesCategorized.sad.length">😢</template>
+          <template v-if="likesCategorized.angry && likesCategorized.angry.length">😡</template>
+          <span class="mx-1">{{ likes.length }}</span>
+        </div>
         <div class="comments" @click="viewMore(comments)">{{ comments.length }} Comments</div>
       </div>
     </template>
@@ -14,8 +23,8 @@
     </div>
 
     <div class="all-comments" v-show="isAnyCommentsShown(comments)">
-      <a @click="viewMore(comments)" v-if="isStillCommentsToBeShown(comments)">
-        View previous Comments
+      <a class="link" @click="viewMore(comments)" v-if="isStillCommentsToBeShown(comments)">
+        View more comments
       </a>
       <template v-for="(comment, index) in comments">
         <div v-if="comment.shown" :key="index" class="comment">
@@ -86,6 +95,16 @@ export default {
     likes() {
       return this.likesProp;
     },
+    likesCategorized() {
+      let obj = {};
+      for (let like of this.likes) {
+        if (!obj[like.type]) {
+          obj[like.type] = [];
+        }
+        obj[like.type].push(like);
+      }
+      return obj;
+    },
   },
   watch: {},
   methods: {
@@ -106,7 +125,7 @@ export default {
       return false;
     },
     viewMore(comments) {
-      this.flagCommentsToShow(comments, 7);
+      this.flagCommentsToShow(comments, 2);
     },
     flagCommentsToShow(comments, number) {
       let flagged_no = 0;
@@ -126,7 +145,7 @@ export default {
 <style lang="scss" scoped>
 .post-interaction {
   .interaction-details {
-    border-inline-start: 2px blue solid;
+    border-inline-start: 2px var(--primary-color) solid;
     border-bottom: 1px #eee solid;
     display: flex;
     justify-content: space-between;
@@ -134,6 +153,9 @@ export default {
     .comments:hover {
       text-decoration: underline;
       cursor: pointer;
+    }
+    .likes {
+      letter-spacing: -2px;
     }
   }
 
@@ -153,7 +175,12 @@ export default {
     }
   }
   .all-comments {
-    padding: 1rem;
+    padding: 7px;
+    > a {
+      margin-bottom: 7px;
+      display: inline-block;
+      font-size: 1rem;
+    }
     .comment {
       display: flex;
       margin-bottom: 1rem;
@@ -178,7 +205,7 @@ export default {
     }
   }
   a.link {
-    color: black;
+    color: gray;
     cursor: pointer;
     &:hover {
       text-decoration: underline;
