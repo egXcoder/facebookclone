@@ -20,7 +20,7 @@ class CommentResource extends JsonResource
             'created_at'=>$this->created_at->diffForHumans(),
             'shown'=>$this->created_at->isLastHour(),
             'user'=> new UserResource($this->user),
-            'comments'=>self::collection($this->comments),
+            'comments'=>self::collection($this->whenLoaded('comments')),
             'likes'=> LikeResource::collection($this->likes)
         ];
     }
