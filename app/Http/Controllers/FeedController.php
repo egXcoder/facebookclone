@@ -10,9 +10,19 @@ class FeedController extends Controller
 {
     public function fetch()
     {
+        DB::enableQueryLog();
         $friends_id = auth('api')->user()->friends()->pluck('friend_id')->toArray();
         $posts = Post::whereIn('user_id', array_merge($friends_id, [auth('api')->user()->id]))
-            ->where('audience_type','<>','only_me')
+            ->where('audience_type', '<>', 'only_me')
+            ->with([
+                'user',
+                'likes',
+                'comments.user',
+                'comments.likes',
+                'comments.comments.user',
+                'comments.comments.likes',
+                'comments.comments.comments'
+            ])
             ->orderBy('updated_at', 'DESC')->get();
         return PostResource::collection($posts);
     }
