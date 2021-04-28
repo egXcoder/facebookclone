@@ -25,7 +25,7 @@ class PostResource extends JsonResource
             'created_at'=>$this->created_at,
             'user'=> new UserResource($this->user),
             'likes'=>LikeResource::collection($this->likes),
-            'comments'=> CommentResource::collection($this->comments)
+            'comments'=> CommentResource::collection($this->whenLoaded($this->comments))
         ];
     }
 }

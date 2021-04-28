@@ -21,7 +21,6 @@ class FeedController extends Controller
                 'comments.likes',
                 'comments.comments.user',
                 'comments.comments.likes',
-                'comments.comments.comments'
             ])
             ->orderBy('updated_at', 'DESC')->get();
         return PostResource::collection($posts);
