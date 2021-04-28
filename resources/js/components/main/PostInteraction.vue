@@ -16,10 +16,17 @@
       </div>
     </template>
 
-    <div class="actions">
-      <button class="btn"><i class="far fa-thumbs-up"></i> Like</button>
-      <button class="btn"><i class="far fa-comment-alt"></i> Comment</button>
-      <button class="btn"><i class="fas fa-share"></i> Share</button>
+    <div class="actions-container">
+      <div class="actions">
+        <button class="btn" @mouseenter="showLikesBar" @mouseleave="hideLikesBar">
+          <i class="far fa-thumbs-up"></i> Like
+        </button>
+        <button class="btn"><i class="far fa-comment-alt"></i> Comment</button>
+        <button class="btn"><i class="fas fa-share"></i> Share</button>
+      </div>
+      <div @mouseenter="showLikesBar" @mouseleave="hideLikesBar" class="likes-bar">
+        👍 ❤️ 🥰 😂 😯 😢 😡
+      </div>
     </div>
 
     <div class="all-comments" v-show="isAnyCommentsShown(comments)">
@@ -138,6 +145,16 @@ export default {
         i++;
       }
     },
+    showLikesBar(e) {
+      let likeButton = e.target;
+      window.$(likeButton).parents(".actions-container").addClass("show");
+      window.$(likeButton).parents(".actions-container").find(".likes-bar").addClass("show");
+    },
+    hideLikesBar(e) {
+      let likeButton = e.target;
+      window.$(likeButton).parents(".actions-container").removeClass("show");
+      window.$(likeButton).parents(".actions-container").find(".likes-bar").removeClass("show");
+    },
   },
 };
 </script>
@@ -159,18 +176,45 @@ export default {
     }
   }
 
-  .actions {
-    display: flex;
-    padding: 7px;
-    border-bottom: 1px #eee solid;
-    button {
-      flex-grow: 1;
+  .actions-container {
+    overflow: hidden;
+    position: relative;
+    &.show {
+      overflow: inherit;
+    }
+    .likes-bar {
+      position: absolute;
+      background: white;
       padding: 7px;
-      &:hover {
-        background: var(--grayed) !important;
+      border-radius: 1rem;
+      display: flex;
+      justify-content: center;
+      font-size: 1.5rem;
+      box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%) !important;
+      margin: 0rem 5px;
+      transition: left 0.3s, opacity 0.6s;
+      top:-40px;
+      left: -30px;
+      opacity: 0;
+      &.show {
+        left: 0px;
+        opacity: 1;
       }
-      &:focus {
-        box-shadow: none;
+    }
+    .actions {
+      display: flex;
+      padding: 7px;
+      border-bottom: 1px #eee solid;
+
+      button {
+        flex-grow: 1;
+        padding: 7px;
+        &:hover {
+          background: var(--grayed) !important;
+        }
+        &:focus {
+          box-shadow: none;
+        }
       }
     }
   }
