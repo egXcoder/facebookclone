@@ -15,9 +15,12 @@ class CommentSeeder extends Seeder
      */
     public function run()
     {
-        foreach(User::all() as $user){
-            Comment::factory(10)->forPost()->forUser($user->id)->create();
-            Comment::factory(10)->forComment()->forUser($user->id)->create();
+        foreach (User::all() as $user) {
+            Comment::factory(10)->forPost()->forUser($user->id)->atRandomCreatedAt()->create();
+        }
+
+        foreach (Comment::all() as $comment) {
+            Comment::factory(rand(0, 5))->forComment($comment->id)->atRandomCreatedAt()->create();
         }
     }
 }

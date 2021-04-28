@@ -18,4 +18,4 @@ Auth::routes();
 Route::post('recent-logins/{recent}/delete','\App\Http\Controllers\RecentLoginController@delete')->name('recent-logins.delete');
 Route::post('recent-logins/{recent}/login','\App\Http\Controllers\RecentLoginController@login')->name('recent-logins.login');
 
-Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->name('home')->where('any','.*');
+Route::get('/{any}', [App\Http\Controllers\HomeController::class, 'index'])->middleware('auth')->name('home')->where('any','.*');

@@ -27,7 +27,7 @@ class CommentFactory extends Factory
             'user_id'=>User::inRandomOrder()->first('id'),
             'commentable_type'=>Post::class,
             'commentable_id'=>Post::inRandomOrder()->first('id'),
-            'text'=>$this->faker->paragraph,
+            'text'=>$this->faker->paragraph(2),
         ];
     }
 
@@ -57,6 +57,13 @@ class CommentFactory extends Factory
                 'commentable_type'=>Comment::class,
                 'commentable_id'=>$comment_id ?? Comment::inRandomOrder()->first('id'),
             ];
+        });
+    }
+
+    public function atRandomCreatedAt()
+    {
+        return $this->state(function ($attributes) {
+            return ['created_at'=>$this->faker->dateTimeBetween('-1 week', 'now')];
         });
     }
 }

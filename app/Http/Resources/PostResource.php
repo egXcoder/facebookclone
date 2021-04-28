@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PostResource extends JsonResource
@@ -25,6 +24,7 @@ class PostResource extends JsonResource
             'doingable_id'=>$this->doingable_id,
             'created_at'=>$this->created_at,
             'user'=> new UserResource($this->user),
+            'likes'=>LikeResource::collection($this->likes),
             'comments'=> CommentResource::collection($this->comments)
         ];
     }
