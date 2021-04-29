@@ -17,6 +17,7 @@ class FeedController extends Controller
             ->with([
                 'user',
                 'likes',
+                'theme',
                 'comments'=>function ($query) {
                     $query->orderBy('created_at', 'ASC');
                 },

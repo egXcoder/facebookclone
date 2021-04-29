@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'id'=>$this->id,
             'audience_type'=>$this->audience_type,
             'text'=>$this->text,
-            'theme_id'=>$this->theme_id,
+            'theme'=>ThemeResource::make($this->theme),
             'gif_id'=>$this->gif_id,
             'doingable_type'=>$this->doingable_type,
             'doingable_id'=>$this->doingable_id,

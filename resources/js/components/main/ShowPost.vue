@@ -1,26 +1,41 @@
 <template>
   <div class="show-post">
-    <div class="p-4">
-      <div class="author">
-        <img :src="post.user.image_url" alt="" />
-        <div class="details">
-          <div class="user-name">{{ post.user.name }}</div>
-          <div>
-            {{ post.created_at }}
-            <template v-if="post.audience_type == 'public'">
-              <i class="fas fa-globe-europe"></i>
-            </template>
-            <template v-else-if="post.audience_type == 'friends'">
-              <i class="fas fa-user-friends"></i>
-            </template>
-            <template v-else-if="post.audience_type == 'only_me'">
-              <i class="fas fa-lock"></i>
-            </template>
-          </div>
+    <div class="author">
+      <img :src="post.user.image_url" alt="" />
+      <div class="details">
+        <div class="user-name">{{ post.user.name }}</div>
+        <div>
+          {{ post.created_at }}
+          <template v-if="post.audience_type == 'public'">
+            <i class="fas fa-globe-europe"></i>
+          </template>
+          <template v-else-if="post.audience_type == 'friends'">
+            <i class="fas fa-user-friends"></i>
+          </template>
+          <template v-else-if="post.audience_type == 'only_me'">
+            <i class="fas fa-lock"></i>
+          </template>
         </div>
       </div>
-      <pre>{{ post.text }}</pre>
     </div>
+    <template v-if="post.theme">
+      <pre
+        :style="{
+          background: `url('${post.theme.background_url}') no-repeat`,
+          'background-size': 'cover',
+          color: post.theme.color,
+          height: '500px',
+          display: 'flex',
+          'align-items': 'center',
+          'justify-content': 'center',
+          'font-weight': 'bold',
+        }"
+        >{{ post.text }}</pre
+      >
+    </template>
+    <template v-else>
+      <pre class="raw">{{ post.text }}</pre>
+    </template>
 
     <div class="post-interaction">
       <template v-if="post.likes.length || post.comments.length">
@@ -271,11 +286,13 @@ export default {
     white-space: pre-wrap;
     font-family: inherit;
     font-size: 1rem;
+    padding: 1rem;
   }
   .author {
     display: flex;
     align-items: center;
     margin-bottom: 5px;
+    padding: 1rem;
     img {
       border-radius: 50%;
       height: 40px;

@@ -449,6 +449,7 @@ export default {
         .theme {
           color: #65676b;
           .text {
+            font-weight: bold;
             border: 0px;
             background: transparent;
             outline: none;
