@@ -166,13 +166,13 @@ export default {
     },
     flagCommentsToShow(comments, number) {
       let flagged_no = 0;
-      let i = 0;
-      while (i < comments.length && flagged_no < number) {
+      let i = comments.length - 1;
+      while (i >= 0 && flagged_no < number) {
         if (!comments[i].shown) {
           comments[i].shown = true;
           flagged_no++;
         }
-        i++;
+        i--;
       }
     },
     isStillCommentsToBeShown(comments) {
