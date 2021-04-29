@@ -94,7 +94,7 @@ class SavePostTest extends TestCase
         
         $this->assertEquals(
             $tagged,
-            Post::first()->tagged_users->pluck('id')->toArray()
+            Post::first()->tagged->pluck('id')->toArray()
         );
     }
 

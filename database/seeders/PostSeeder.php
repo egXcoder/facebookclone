@@ -20,6 +20,13 @@ class PostSeeder extends Seeder
             for ($i=0;$i<=5;$i++) {
                 $post_factory->chainFeatures()
                     ->forUser($user->id)
+                    ->afterCreating(function (Post $post) {
+                        if (rand(0, 1)) {
+                            $post->tagged()->sync(
+                                $post->user->friends()->inRandomOrder()->take(rand(1,4))->get()
+                            );
+                        }
+                    })
                     ->atRandomCreatedAt()
                     ->create();
             }

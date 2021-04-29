@@ -29,22 +29,12 @@
             <div class="author">
               <img :src="$store.state.User.me.image_url" class="rounded-circle" />
               <div>
-                <p class="mb-0">
-                  {{ $store.state.User.me.name | capitalize }}
-                  <span v-if="Object.keys(feeling).length">
-                    {{ `is ${feeling.icon} feeling ${feeling.name}` }}
-                  </span>
-                  <span v-if="Object.keys(activity).length">
-                    is
-                    <img :src="activity.icon" style="height: 20px; margin: 0px" />
-                    {{ `${activity.parent_name} ${activity.name}` }}
-                  </span>
-
-                  <span v-if="Object.keys(tagged).length"
-                    >with
-                    <span>{{ tagged_names.join(", ") }}</span>
-                  </span>
-                </p>
+                <post-header
+                  :username="$store.state.User.me.name"
+                  :feeling="feeling"
+                  :activity="activity"
+                  :tagged="tagged"
+                />
                 <select v-model="audience_type">
                   <option value="public">Public</option>
                   <option value="friends">Friends</option>
@@ -153,12 +143,13 @@ import ThemePicker from "./ThemePicker";
 import FeelingActivityModal from "./FeelingActivityModal";
 import TagFriendsModal from "./TagFriendsModal";
 import GifModal from "./GifModal";
+import PostHeader from "../widgets/PostHeader";
 
 let FeelingActivityMixin = {
   data() {
     return {
-      feeling: {},
-      activity: {},
+      feeling: null,
+      activity: null,
     };
   },
   methods: {
@@ -182,11 +173,11 @@ let FeelingActivityMixin = {
     },
     selectFeeling(feeling) {
       this.feeling = feeling;
-      this.activity = {};
+      this.activity = null;
     },
     selectActivity(activity) {
       this.activity = activity;
-      this.feeling = {};
+      this.feeling = null;
     },
   },
 };
@@ -194,18 +185,10 @@ let FeelingActivityMixin = {
 let TagFriendsMixin = {
   data() {
     return {
-      tagged: {},
+      tagged: [],
     };
   },
-  computed: {
-    tagged_names() {
-      let names = [];
-      for (let friend_id in this.tagged) {
-        names.push(this.tagged[friend_id].name);
-      }
-      return names;
-    },
-  },
+  computed: {},
   methods: {
     showTagFriendsModal() {
       window.$(this.$refs.tag_friends_modal.$el).modal("show");
@@ -220,11 +203,7 @@ let TagFriendsMixin = {
       this.tagged = tagged;
     },
     getTaggedIds() {
-      let ids = [];
-      for (let tagged_id in this.tagged) {
-        ids.push(tagged_id);
-      }
-      return ids;
+      return this.tagged.map((user) => user.id);
     },
   },
 };
@@ -260,6 +239,7 @@ export default {
     FeelingActivityModal,
     TagFriendsModal,
     GifModal,
+    PostHeader,
   },
   mixins: [FeelingActivityMixin, TagFriendsMixin, GifMixin],
   data() {
@@ -334,10 +314,10 @@ export default {
       let post = {
         text: this.text,
         audience_type: this.audience_type,
-        theme_id: this.theme.id,
-        feeling_id: this.feeling.id,
-        activity_id: this.activity.id,
-        gif_id: this.gif.id,
+        theme_id: this.theme?.id,
+        feeling_id: this.feeling?.id,
+        activity_id: this.activity?.id,
+        gif_id: this.gif?.id,
         tagged: this.getTaggedIds(),
       };
 
@@ -345,16 +325,17 @@ export default {
         if (response.data.success) {
           window.toastr.success(response.data.success);
           this.hideModal();
-          this.$store.commit('Feed/unshiftPost',response.data.data);
-          
-          let freshCopyOfData = this.$options.data();
-          Object.assign(this.$data,freshCopyOfData);
+          this.$store.commit("Feed/unshiftPost", response.data.data);
+          this.refreshComponentData();
         }
 
         if (response.data.error) {
           window.toastr.error(response.data.error);
         }
       });
+    },
+    refreshComponentData() {
+      Object.assign(this.$data, this.$options.data());
     },
   },
 };

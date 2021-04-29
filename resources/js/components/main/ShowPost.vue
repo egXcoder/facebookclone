@@ -3,7 +3,12 @@
     <div class="author">
       <img :src="post.user.image_url" alt="" />
       <div class="details">
-        <div class="user-name">{{ post.user.name }}</div>
+        <post-header
+          :username="post.user.name"
+          :feeling="post.feeling"
+          :activitiy="post.activity"
+          :tagged="post.tagged"
+        />
         <div>
           {{ post.created_at }}
           <template v-if="post.audience_type == 'public'">
@@ -35,6 +40,9 @@
     </template>
     <template v-else>
       <pre class="raw">{{ post.text }}</pre>
+      <template v-if="post.gif">
+        <img :src="post.gif.gif_url" alt="">
+      </template>
     </template>
 
     <div class="post-interaction">
@@ -165,7 +173,12 @@
 </template>
 
 <script>
+import PostHeader from "../widgets/PostHeader";
+
 export default {
+  components: {
+    PostHeader,
+  },
   data() {
     return {};
   },

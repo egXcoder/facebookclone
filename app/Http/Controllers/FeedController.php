@@ -10,7 +10,6 @@ class FeedController extends Controller
 {
     public function fetch()
     {
-        DB::enableQueryLog();
         $friends_id = auth('api')->user()->friends()->pluck('friend_id')->toArray();
         $posts = Post::whereIn('user_id', array_merge($friends_id, [auth('api')->user()->id]))
             ->where('audience_type', '<>', 'only_me')
@@ -18,6 +17,9 @@ class FeedController extends Controller
                 'user',
                 'likes',
                 'theme',
+                'gif',
+                'doingable',
+                'tagged',
                 'comments'=>function ($query) {
                     $query->orderBy('created_at', 'ASC');
                 },

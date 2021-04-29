@@ -3,7 +3,7 @@
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header align-items-center">
-          <button class="close" @click="$emit('hide',tagged)">
+          <button class="close" @click="$emit('hide', tagged)">
             <i class="fas fa-arrow-left" style="font-size: 1.2rem" />
           </button>
           <h5 class="modal-title font-weight-bold text-center flex-grow-1">Tag Friends</h5>
@@ -20,10 +20,12 @@
                   placeholder="Search ..."
                 />
               </div>
-              <a class="mx-3 text-reset text-decoration-none" @click="$emit('hide',tagged)">Done</a>
+              <a class="mx-3 text-reset text-decoration-none" @click="$emit('hide', tagged)"
+                >Done</a
+              >
             </div>
             <hr />
-            <template v-if="Object.keys(tagged).length">
+            <template v-if="tagged.length">
               <div class="tagged mx-2">
                 <p class="mb-0">Tagged</p>
                 <div class="d-flex flex-wrap tagged-container">
@@ -59,7 +61,7 @@ export default {
   data() {
     return {
       search: "",
-      tagged: {},
+      tagged: [],
       friends: [],
     };
   },
@@ -73,10 +75,17 @@ export default {
       });
     },
     addFriendToTagged(friend) {
-      this.$set(this.tagged, friend.id, friend);
+      if (!this.isFriendSelected(friend)) {
+        this.tagged.push(friend);
+      }
     },
     deleteFriendFromTagged(friend) {
-      this.$delete(this.tagged, friend.id);
+      if (this.isFriendSelected(friend)) {
+        this.tagged = this.tagged.filter((user) => user.id != friend.id);
+      }
+    },
+    isFriendSelected(friend) {
+      return this.tagged.find((user) => user.id == friend.id);
     },
   },
 };

@@ -50,7 +50,7 @@ class PostController extends Controller
                 'user_id'=>auth('api')->user()->id
             ], $this->getPolymorphicArray()));
     
-            $post->tagged_users()->sync(request('tagged'));
+            $post->tagged()->sync(request('tagged'));
         });
         return $post;
     }

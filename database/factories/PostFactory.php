@@ -22,8 +22,6 @@ class PostFactory extends Factory
      */
     protected $model = Post::class;
     
-    protected $withTagged = false;
-
     /**
      * Define the model's default state.
      *
@@ -36,23 +34,6 @@ class PostFactory extends Factory
             'audience_type'=>Arr::random(Post::AUDIENCE_TYPE),
             'user_id'=>User::inRandomOrder()->first()->id,
         ];
-    }
-
-    /**
-     * Configure the model factory.
-     *
-     * @return $this
-     */
-    public function configure()
-    {
-        return $this->afterCreating(function (Post $post) {
-            if ($this->withTagged) {
-                $howManyFrinds = $post->user->friends()->count();
-                $post->tagged_users()->sync(
-                    $post->user->friends()->inRandomOrder()->take(0, $howManyFrinds)->get()
-                );
-            }
-        });
     }
 
     public function withTheme()
@@ -104,12 +85,6 @@ class PostFactory extends Factory
         });
     }
 
-    public function withTagged()
-    {
-        $this->withTagged = true;
-        return $this;
-    }
-
     public function forUser($user_id = null)
     {
         return $this->state(function ($attributes) use ($user_id) {
@@ -133,7 +108,7 @@ class PostFactory extends Factory
         //which is going to create totally_new_object so i needed to track the recent object created
         //by using a variable
         $obj = $this;
-        for ($i=0;$i<=array_rand($featuresList);$i++) {
+        for ($i=0;$i<=count($featuresList);$i++) {
             $obj = app()->call([$this,Arr::random($featuresList)->getName()]);
         }
         return $obj;

@@ -1,19 +1,22 @@
 import axios from "axios"
 
 export default {
-    namespaced:true,
+    namespaced: true,
     state: {
         me: {}
     },
+    getters: {
+
+    },
     mutations: {
-        setMe(state,payload){
+        setMe(state, payload) {
             state.me = payload;
         }
     },
     actions: {
         fetchMe(context) {
             axios.get('/api/user').then((response) => {
-                context.commit('setMe',response.data);
+                context.commit('setMe', response.data);
             })
         }
     }

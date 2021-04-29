@@ -19,7 +19,7 @@ class Post extends Model
         return $this->belongsTo(User::class, "user_id");
     }
     
-    public function tagged_users()
+    public function tagged()
     {
         return $this->belongsToMany(User::class, "tagged_users", "post_id", "user_id")->withTimestamps();
     }
