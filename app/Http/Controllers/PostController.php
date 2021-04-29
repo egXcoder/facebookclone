@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Like;
 use App\Models\Post;
 use App\Models\PostActivity;
 use App\Models\PostFeeling;
@@ -14,7 +15,7 @@ class PostController extends Controller
     {
         $this->validate(request(), [
             'text'=>'required|string|max:1024',
-            'audience_type'=>'required|in:public,friends,only_me',
+            'audience_type'=>'required|b public,friends,only_me',
             'theme_id'=>['numeric','exists:post_themes,id',new ProhibitedIfExists('gif_id')],
             'feeling_id'=>['numeric','exists:post_feelings,id',new ProhibitedIfExists('activity_id')],
             'activity_id'=>['numeric','exists:post_activities,id',new ProhibitedIfExists('feeling_id')],
@@ -66,5 +67,25 @@ class PostController extends Controller
     
             $post->tagged_users()->sync(request('tagged'))->touch();
         });
+    }
+
+    public function like(Post $post)
+    {
+        request()->validate([
+            'type'=>['required',function ($attribute, $type, $fail) {
+                if (!in_array($type, Like::TYPES)) {
+                    $fail('type is invalid');
+                }
+            }]
+        ]);
+
+        $post->likes()->updateOrCreate(['user_id'=>auth('api')->user()->id], ['type'=>request('type')]);
+        return response()->json(['success'=>'Liked successfully']);
+    }
+
+    public function unlike(Post $post)
+    {
+        $post->likes()->where('user_id', '=', auth('api')->user()->id)->delete();
+        return response()->json(['success'=>'Unliked successfully']);
     }
 }

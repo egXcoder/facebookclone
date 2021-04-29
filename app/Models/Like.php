@@ -11,6 +11,8 @@ class Like extends Model
 
     public const TYPES = ['like','love','care','haha','wow','sad','angry'];
 
+    protected $guarded = [];
+    
     protected $touches = ['likeable'];
 
     public function user()

@@ -23,9 +23,17 @@ class PostResource extends JsonResource
             'doingable_type'=>$this->doingable_type,
             'doingable_id'=>$this->doingable_id,
             'created_at'=>$this->created_at,
+            'isLiked'=>$this->isLikedByLoggedUser($this->likes),
             'user'=> new UserResource($this->user),
             'likes'=>LikeResource::collection($this->likes),
             'comments'=> CommentResource::collection($this->comments)
         ];
+    }
+
+    protected function isLikedByLoggedUser($likes)
+    {
+        return $likes->first(function ($like) {
+            return $like->user_id == auth('api')->user()->id;
+        })->type ?? '';
     }
 }
