@@ -59,7 +59,9 @@
             <template v-else><i class="far fa-thumbs-up"></i> Like</template>
           </button>
 
-          <button class="btn"><i class="far fa-comment-alt"></i> Comment</button>
+          <button class="btn" @click="focusComment()">
+            <i class="far fa-comment-alt"></i> Comment
+          </button>
           <button class="btn"><i class="fas fa-share"></i> Share</button>
         </div>
 
@@ -136,6 +138,7 @@
         <div class="write-comment">
           <img :src="$store.state.user.me.image_url" />
           <div
+            ref="write_comment"
             @keyup.enter.exact="comment($event)"
             contenteditable
             data-placeholder="Write a comment..."
@@ -243,6 +246,16 @@ export default {
         });
       window.$(event.target).trigger("blur");
       event.target.innerText = "";
+    },
+    focusComment() {
+      if (this.isAnyCommentsShown(this.post.comments)) {
+        this.$refs.write_comment.focus();
+      }
+
+      this.viewMore(this.post.comments);
+      this.$nextTick(() => {
+        this.$refs.write_comment.focus();
+      });
     },
   },
 };
