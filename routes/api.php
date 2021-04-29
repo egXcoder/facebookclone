@@ -37,8 +37,9 @@ Route::prefix('posts')->middleware('auth:api')->group(function () {
 
     Route::post('/', [PostController::class,'store']);
 
-    Route::get('/feed',[FeedController::class,'fetch']);
+    Route::get('/feed', [FeedController::class,'fetch']);
 
-    Route::post('/{post}/like',[PostController::class,'like']);
-    Route::post('/{post}/unlike',[PostController::class,'unlike']);
+    Route::post('/{post}/like', [PostController::class,'like']);
+    Route::post('/{post}/unlike', [PostController::class,'unlike']);
+    Route::post('/{post}/comments', [PostController::class,'comment']);
 });

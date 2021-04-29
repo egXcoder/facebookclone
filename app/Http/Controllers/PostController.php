@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CommentResource;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\PostActivity;
@@ -15,7 +16,7 @@ class PostController extends Controller
     {
         $this->validate(request(), [
             'text'=>'required|string|max:1024',
-            'audience_type'=>'required|b public,friends,only_me',
+            'audience_type'=>'required|in:public,friends,only_me',
             'theme_id'=>['numeric','exists:post_themes,id',new ProhibitedIfExists('gif_id')],
             'feeling_id'=>['numeric','exists:post_feelings,id',new ProhibitedIfExists('activity_id')],
             'activity_id'=>['numeric','exists:post_activities,id',new ProhibitedIfExists('feeling_id')],
@@ -87,5 +88,19 @@ class PostController extends Controller
     {
         $post->likes()->where('user_id', '=', auth('api')->user()->id)->delete();
         return response()->json(['success'=>'Unliked successfully']);
+    }
+
+    public function comment(Post $post)
+    {
+        request()->validate([
+            'text'=>'required|string'
+        ]);
+
+        $comment = $post->comments()->create([
+            'text'=>request('text'),
+            'user_id'=>auth('api')->user()->id
+        ]);
+
+        return CommentResource::make($comment)->additional(['success'=>'Commented Successfully']);
     }
 }

@@ -19,7 +19,7 @@
           </div>
         </div>
       </div>
-      {{ post.text }}
+      <pre>{{ post.text }}</pre>
     </div>
 
     <div class="post-interaction">
@@ -92,7 +92,9 @@
             <div>
               <div class="details">
                 <div class="user-name">{{ comment.user.name }}</div>
-                <div class="text">{{ comment.text }}</div>
+                <div class="text">
+                  <pre>{{ comment.text }}</pre>
+                </div>
                 <div class="actions">
                   <a class="link">like</a>
                   .
@@ -114,7 +116,9 @@
                     <img :src="reply.user.image_url" />
                     <div class="details">
                       <div class="user-name">{{ reply.user.name }}</div>
-                      <div class="text">{{ reply.text }}</div>
+                      <div class="text">
+                        <pre>{{ reply.text }}</pre>
+                      </div>
                       <div class="actions">
                         <a class="link">like</a>
                         .
@@ -129,6 +133,14 @@
             </div>
           </div>
         </template>
+        <div class="write-comment">
+          <img :src="$store.state.user.me.image_url" />
+          <div
+            @keyup.enter.exact="comment($event)"
+            contenteditable
+            data-placeholder="Write a comment..."
+          ></div>
+        </div>
       </div>
     </div>
   </div>
@@ -217,6 +229,21 @@ export default {
         }
       });
     },
+    comment(event) {
+      window.axios
+        .post(`/api/posts/${this.post.id}/comments`, { text: event.target.innerText })
+        .then((response) => {
+          if (response.data.success) {
+            let comment = response.data.data;
+            comment.shown = true;
+            comment.comments = [];
+            this.post.comments.push(comment);
+            window.toastr.success(response.data.success);
+          }
+        });
+      window.$(event.target).trigger("blur");
+      event.target.innerText = "";
+    },
   },
 };
 </script>
@@ -227,6 +254,11 @@ export default {
   border-radius: 7px;
   margin-bottom: 1rem;
   box-shadow: 0 0.5rem 1rem rgb(0 0 0 / 15%) !important;
+  pre {
+    white-space: pre-wrap;
+    font-family: inherit;
+    font-size: 1rem;
+  }
   .author {
     display: flex;
     align-items: center;
@@ -246,6 +278,11 @@ export default {
   }
 
   .post-interaction {
+    pre {
+      white-space: pre-wrap;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
     .interaction-details {
       border-inline-start: 2px var(--primary-color) solid;
       border-bottom: 1px #eee solid;
@@ -337,6 +374,30 @@ export default {
         }
         .replies {
           margin-top: 7px;
+        }
+      }
+      .write-comment {
+        display: flex;
+        align-items: center;
+        img {
+          height: 40px;
+          border-radius: 50%;
+          margin-left: 7px;
+          margin-right: 7px;
+        }
+        div {
+          background: var(--grayed);
+          color: black;
+          padding: 1rem;
+          flex-grow: 1;
+          border: none;
+          outline: none;
+          border-radius: 1rem;
+          display: flex;
+          &:empty:before {
+            content: attr(data-placeholder);
+            letter-spacing: 1px;
+          }
         }
       }
     }
