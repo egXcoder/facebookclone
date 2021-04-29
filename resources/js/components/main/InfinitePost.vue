@@ -1,6 +1,6 @@
 <template>
   <div class="infinit-posts">
-    <template v-for="(post, index) in posts">
+    <template v-for="(post, index) in $store.state.Feed.posts">
       <show-post :post="post" :key="index"></show-post>
     </template>
   </div>
@@ -18,9 +18,7 @@ export default {
     };
   },
   created() {
-    window.axios.get("api/posts/feed").then((response) => {
-      this.posts = response.data.data;
-    });
+    this.$store.dispatch('Feed/fetchPosts');
   },
 };
 </script>

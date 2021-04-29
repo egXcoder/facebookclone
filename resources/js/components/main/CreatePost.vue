@@ -2,7 +2,7 @@
   <div ref="add_post_component" class="add-post-component">
     <div class="add-post">
       <div class="d-flex align-items-center onmind">
-        <img :src="$store.state.user.me.image_url" class="img-fluid" @click="showModal()" />
+        <img :src="$store.state.User.me.image_url" class="img-fluid" @click="showModal()" />
         <p class="flex-grow-1" @click="showModal()">
           {{ welcome_question }}
         </p>
@@ -27,10 +27,10 @@
           </div>
           <div class="modal-body p-0">
             <div class="author">
-              <img :src="$store.state.user.me.image_url" class="rounded-circle" />
+              <img :src="$store.state.User.me.image_url" class="rounded-circle" />
               <div>
                 <p class="mb-0">
-                  {{ $store.state.user.me.name | capitalize }}
+                  {{ $store.state.User.me.name | capitalize }}
                   <span v-if="Object.keys(feeling).length">
                     {{ `is ${feeling.icon} feeling ${feeling.name}` }}
                   </span>
@@ -273,7 +273,7 @@ export default {
   },
   computed: {
     welcome_question() {
-      let name = this.$store.state.user.me.name;
+      let name = this.$store.state.User.me.name;
       name = this.$options.filters.capitalize(name);
       name = this.$options.filters.firstWord(name);
       return `What's on your mind, ${name}?`;
@@ -288,6 +288,9 @@ export default {
   methods: {
     showModal() {
       window.$(this.$refs.modal).modal("show");
+    },
+    hideModal() {
+      window.$(this.$refs.modal).modal("hide");
     },
     showEmojiPopup() {
       this.pick_emoji = !this.pick_emoji;
@@ -341,6 +344,11 @@ export default {
       window.axios.post("/api/posts", post).then((response) => {
         if (response.data.success) {
           window.toastr.success(response.data.success);
+          this.hideModal();
+          this.$store.commit('Feed/unshiftPost',response.data.data);
+          
+          let freshCopyOfData = this.$options.data();
+          Object.assign(this.$data,freshCopyOfData);
         }
 
         if (response.data.error) {

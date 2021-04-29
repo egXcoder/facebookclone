@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\CommentResource;
+use App\Http\Resources\PostResource;
 use App\Models\Like;
 use App\Models\Post;
 use App\Models\PostActivity;
 use App\Models\PostFeeling;
 use App\Rules\ProhibitedIfExists;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
@@ -31,11 +33,29 @@ class PostController extends Controller
             }]
         ]);
 
-        $this->storePost();
-
-        return ['success'=>'Post is saved successfully'];
+        $post = $this->storePost();
+        
+        return PostResource::make($post)->additional(['success'=>'Post is saved successfully']);
     }
 
+    protected function storePost()
+    {
+        $post = null;
+        DB::transaction(function () use (&$post) {
+            $post = Post::create(array_merge([
+                'text'=>request('text'),
+                'audience_type'=>request('audience_type'),
+                'theme_id'=>request('theme_id'),
+                'gif_id'=>request('gif_id'),
+                'user_id'=>auth('api')->user()->id
+            ], $this->getPolymorphicArray()));
+    
+            $post->tagged_users()->sync(request('tagged'));
+        });
+        return $post;
+    }
+
+    
     protected function getPolymorphicArray()
     {
         if (request('feeling_id')) {
@@ -53,21 +73,6 @@ class PostController extends Controller
         }
 
         return [];
-    }
-
-    protected function storePost()
-    {
-        DB::transaction(function () {
-            $post = Post::create(array_merge([
-                'text'=>request('text'),
-                'audience_type'=>request('audience_type'),
-                'theme_id'=>request('theme_id'),
-                'gif_id'=>request('gif_id'),
-                'user_id'=>auth('api')->user()->id
-            ], $this->getPolymorphicArray()));
-    
-            $post->tagged_users()->sync(request('tagged'));
-        });
     }
 
     public function like(Post $post)

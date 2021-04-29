@@ -151,7 +151,7 @@
           </div>
         </template>
         <div class="write-comment">
-          <img :src="$store.state.user.me.image_url" />
+          <img :src="$store.state.User.me.image_url" />
           <div
             ref="write_comment"
             @keyup.enter.exact="comment($event)"

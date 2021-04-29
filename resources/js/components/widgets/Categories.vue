@@ -2,11 +2,11 @@
   <div class="categories-widget">
     <router-link to="/xx">
       <img
-        :src="$store.state.user.me.image_url"
+        :src="$store.state.User.me.image_url"
         class="img-fluid rounded-circle mx-2"
         style="height: 30px"
       />
-      {{ $store.state.user.me.name }}
+      {{ $store.state.User.me.name }}
     </router-link>
     <router-link to="/xx">
       <img
