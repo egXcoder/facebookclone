@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
+
 class FriendController extends Controller
 {
     public function fetch()
     {
-        return response()->json(auth()->user()->friends);
+        return UserResource::collection(auth('api')->user()->friends);
     }
 }

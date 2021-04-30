@@ -1,7 +1,8 @@
 import Store from "./store";
 
 export default {
-    initStore(){
+    initStore() {
         Store.dispatch('User/fetchMe');
+        Store.dispatch('User/fetchFriends');
     }
 }

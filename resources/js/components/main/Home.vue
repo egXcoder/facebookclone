@@ -2,7 +2,7 @@
   <div class="home-screen row">
     <aside class="left d-flex flex-column col-md-3">
       <categories />
-      <hr class="w-100">
+      <hr class="w-100" />
       <shortcuts />
     </aside>
     <main class="middle col-md-6">
@@ -13,7 +13,9 @@
         </div>
       </div>
     </main>
-    <aside class="right" />
+    <aside class="right col-md-3">
+      <contacts></contacts>
+    </aside>
   </div>
 </template>
 
@@ -21,7 +23,8 @@
 import Categories from "../widgets/Categories.vue";
 import Shortcuts from "./../widgets/Shortcuts";
 import CreatePost from "./CreatePost.vue";
-import InfinitePost from './InfinitePost';
+import InfinitePost from "./InfinitePost";
+import Contacts from "./Contacts";
 
 export default {
   components: {
@@ -29,6 +32,7 @@ export default {
     Categories,
     CreatePost,
     InfinitePost,
+    Contacts,
   },
   mounted() {
     console.log("Component mounted.");
@@ -38,9 +42,9 @@ export default {
 
 <style lang="scss" scoped>
 .home-screen {
-  aside.left{
+  aside.left,aside.right {
     position: sticky;
-    top:var(--top-header);
+    top: var(--top-header);
     height: fit-content;
   }
 }
