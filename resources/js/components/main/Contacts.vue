@@ -4,7 +4,7 @@
       <input
         type="text"
         class="form-control"
-        placeholder="Search contacts"
+        placeholder="Search Contacts..."
         v-model="search_contact"
       />
     </div>
@@ -45,7 +45,7 @@ export default {
   .search {
     input {
       border-radius: 1rem;
-      padding: 7px;
+      padding: 7px 1rem;
     }
   }
   .list {
