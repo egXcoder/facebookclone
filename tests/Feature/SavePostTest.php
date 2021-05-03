@@ -85,7 +85,7 @@ class SavePostTest extends TestCase
     /** @test */
     public function save_post_with_tagged_friends()
     {
-        $tagged = $this->user->friends()->pluck('friend_id')->toArray();
+        $tagged = $this->user->friends->pluck('friend_id')->toArray();
         $this->postJson('/api/posts', [
             'text'=>'hello world',
             'audience_type'=>'public',

@@ -27,7 +27,8 @@ class ContactTest extends TestCase
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();
 
-        $this->user->friends()->attach([$user1->id,$user2->id]);
+        $this->user->friendsOfMine()->attach($user1->id);
+        $this->user->friendOf()->attach($user2->id);
         
         $response = $this->getJson('/api/user/friends');
         $this->assertCount(2,$response->original);

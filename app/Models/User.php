@@ -42,9 +42,38 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function friends()
+    public function friendsOfMine()
     {
         return $this->belongsToMany(self::class, "users_friends", "user_id", "friend_id")->withTimestamps();
+    }
+    
+    public function friendOf()
+    {
+        return $this->belongsToMany(self::class, "users_friends", "friend_id", "user_id")->withTimestamps();
+    }
+
+    // accessor allowing you call $user->friends
+    public function getFriendsAttribute()
+    {
+        if (! array_key_exists('friends', $this->relations)) {
+            $this->loadFriends();
+        }
+
+        return $this->getRelation('friends');
+    }
+
+    protected function loadFriends()
+    {
+        if (! array_key_exists('friends', $this->relations)) {
+            $friends = $this->mergeFriends();
+
+            $this->setRelation('friends', $friends);
+        }
+    }
+
+    protected function mergeFriends()
+    {
+        return $this->friendsOfMine->merge($this->friendOf);
     }
 
     public function tagged_posts()
