@@ -41,7 +41,7 @@
     <template v-else>
       <pre class="raw">{{ post.text }}</pre>
       <template v-if="post.gif">
-        <img :src="post.gif.gif_url" alt="">
+        <img style="width: 100%" :src="post.gif.gif_url" alt="" />
       </template>
     </template>
 

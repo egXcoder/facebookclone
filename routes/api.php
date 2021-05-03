@@ -3,6 +3,7 @@
 use App\Http\Controllers\FeedController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GifController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\PostActivityController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\PostFeelingController;
@@ -27,6 +28,8 @@ Route::prefix('user')->middleware('auth:api')->group(function () {
     });
 
     Route::get('/friends', [FriendController::class,'fetch']);
+    Route::get('/{chatWith}/messages',[MessageController::class,'fetch']);
+    Route::post('/{chatWith}/messages',[MessageController::class,'store']);
 });
 
 Route::prefix('posts')->middleware('auth:api')->group(function () {
