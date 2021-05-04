@@ -5,78 +5,110 @@
         type="search"
         class="form-control"
         placeholder="Search Contacts..."
-        v-model="search_contact"
+        v-model="searchContact"
       />
     </div>
     <div class="list">
       <template v-for="(contact, index) in contacts">
-        <div class="friend" :key="index" @click="showMessenger(contact)">
+        <div class="friend" :key="index" @click="addToChats(contact)">
           <img :src="contact.image_url" alt="" />
           <p>{{ contact.name }}</p>
         </div>
       </template>
     </div>
-    <div v-if="chatWithList.length" class="chat-with-list">
-      <div v-for="(chatWith, index) in chatWithList" :key="index">
-        <img :src="chatWith.image_url" @click="showChatWithFromList(chatWith)" />
+    <div v-if="cache.length" class="chat-with-list">
+      <div v-for="(user, index) in cache" :key="index">
+        <img :src="user.image_url" @click="removeFromCache(user)" />
       </div>
     </div>
-    <messenger
-      v-if="chatWith"
-      :key="chatWith.id"
-      :chatWith="chatWith"
-      @close="closeMessenger()"
-      @cache-chat-with="cacheChatWith"
-    />
+    <div class="chats-container">
+      <div v-for="(user, index) in chats" :key="index">
+        <messenger
+          :key="user.id"
+          :chatWith="user"
+          @close="removeFromChats(user)"
+          @cache-user="addToCache($event)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Messenger from "./Messenger";
+import { bus } from "../../app";
 
 export default {
   components: { Messenger },
   data() {
     return {
-      search_contact: "",
-      chatWith: null,
-      chatWithList: [],
+      searchContact: null,
+      cache: [],
+      chats: [],
     };
   },
   computed: {
     contacts() {
-      if (!this.search_contact) {
+      if (!this.searchContact) {
         return this.$store.state.User.friends.slice(0, 8);
       }
 
       return this.$store.state.User.friends.filter((user) => {
-        return user.name.toLowerCase().includes(this.search_contact.toLowerCase());
+        return user.name.toLowerCase().includes(this.searchContact.toLowerCase());
       });
     },
   },
+  mounted() {
+    this.listenOnMessageSent();
+  },
   methods: {
-    showMessenger(chatWith) {
-      this.chatWith = chatWith;
-    },
-    closeMessenger() {
-      this.chatWith = null;
-    },
-    cacheChatWith(chatWith) {
-      if (this.chatWithList.find((x) => x.id == chatWith.id)) {
-        this.chatWith = null;
+    addToChats(user) {
+      if (this.isUserOnChats(user)) {
         return;
       }
 
-      if (this.chatWithList.length >= 5) {
-        this.chatWithList.shift();
+      this.chats.push(user);
+
+      if (this.chats.length > 2) {
+        this.chats.shift();
       }
-      
-      this.chatWith = null;
-      this.chatWithList.push(chatWith);
     },
-    showChatWithFromList(chatWith) {
-      this.chatWith = chatWith;
-      this.chatWithList = this.chatWithList.filter((x) => x.id != chatWith.id);
+    isUserOnChats(user) {
+      return this.chats.find((x) => x.id == user.id);
+    },
+    removeFromChats(user) {
+      this.chats = this.chats.filter((x) => x.id != user.id);
+    },
+    addToCache(user) {
+      this.removeFromChats(user);
+
+      if (this.isUserOnCache(user)) {
+        return;
+      }
+
+      this.cache.push(user);
+
+      if (this.cache.length >= 5) {
+        this.cache.shift();
+      }
+    },
+    isUserOnCache(user) {
+      return this.cache.find((x) => x.id == user.id);
+    },
+    removeFromCache(user) {
+      this.addToChats(user);
+      this.cache = this.cache.filter((x) => x.id != user.id);
+    },
+    listenOnMessageSent() {
+      bus.$on("MessageSent", (e) => {
+        if (!this.isUserOnChats(e.sender)) {
+          this.addToChats(e.sender);
+        }
+      });
+
+      this.$on("hooks:beforeDestroy", () => {
+        bus.$off("MessageSent");
+      });
     },
   },
 };
@@ -126,6 +158,12 @@ export default {
       height: 60px;
       border-radius: 50%;
     }
+  }
+  .chats-container {
+    position: fixed;
+    bottom: 0px;
+    right: 6rem;
+    display: flex;
   }
 }
 </style>

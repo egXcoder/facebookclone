@@ -54,7 +54,7 @@ class MessageController extends Controller
             'text'=>request('text')
         ]);
 
-        broadcast(new MessageSent(auth('api')->user(), $chatWith, request('text')));
+        broadcast(new MessageSent(auth('api')->user(), $chatWith, MessageResource::make(($message))));
 
         return MessageResource::make($message)->additional(['success'=>'Message is sent successfuly']);
     }

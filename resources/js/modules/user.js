@@ -1,3 +1,4 @@
+import Vue from 'vue';
 import axios from "axios"
 import { bus } from "../app"
 
@@ -6,6 +7,7 @@ export default {
     state: {
         me: {},
         friends: [],
+        messagesMap: {},
     },
     getters: {
 
@@ -21,6 +23,17 @@ export default {
             window.Echo.channel(`Messenger.${state.me.id}`).listen("MessageSent", function ($event) {
                 bus.$emit('MessageSent', $event);
             });
+        },
+        setMessages(state, { user, messages }) {
+            Vue.set(state.messagesMap, user.id, messages);
+        },
+        loadMoreMessages(state, { user, messages }) {
+            Vue.set(state.messagesMap, user.id, messages.concat(state.messagesMap[user.id]))
+        },
+        addMessage(state, { user, message }) {
+            if (state.messagesMap[user.id]) {
+                Vue.set(state.messagesMap, user.id, state.messagesMap[user.id].concat([message]));
+            }
         }
     },
     actions: {

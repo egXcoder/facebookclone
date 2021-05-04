@@ -8,7 +8,7 @@
       <div class="actions">
         <i class="fas fa-video"></i>
         <i class="fas fa-phone-alt"></i>
-        <i class="fas fa-window-minimize" @click="$emit('cache-chat-with', chatWith)"></i>
+        <i class="fas fa-window-minimize" @click="$emit('cache-user', chatWith)"></i>
         <i class="fas fa-times" @click="$emit('close')"></i>
       </div>
     </div>
@@ -17,20 +17,16 @@
         <div class="spinner"></div>
       </template>
       <template v-else>
-        <template v-if="messages.length">
+        <template v-if="messages">
           <div v-for="(message, index) in messages" :key="index">
             <p class="show-date" v-if="message.show_date">{{ message.show_date }}</p>
             <template v-if="isMessageSentByLoggedUser(message)">
-              <div class="sent">
-                {{ message.text }}
-              </div>
+              <div class="sent">{{ message.text }}</div>
             </template>
-            <template>
+            <template v-else>
               <div class="received">
                 <img :src="chatWith.image_url" />
-                <div>
-                  {{ message.text }}
-                </div>
+                <div>{{ message.text }}</div>
               </div>
             </template>
           </div>
@@ -52,7 +48,7 @@
 </template>
 
 <script>
-import { bus } from "./../../app";
+import { bus } from "../../app";
 
 export default {
   props: {
@@ -62,21 +58,21 @@ export default {
   },
   data() {
     return {
-      messages: [],
       showSpinner: false,
       next_link: null,
     };
+  },
+  computed: {
+    messages() {
+      return this.$store.state.User.messagesMap[this.chatWith.id];
+    },
   },
   created() {
     this.fetchMessagesFirstTime();
   },
   mounted() {
     this.loadMoreOnScroll();
-
-    //TODO::Event can be sent,now we need to setup what will happen when we receive a new message from websocket
-    bus.$on("MessageSent", (e) => {
-      console.log(e);
-    });
+    this.listenOnMessageSent();
   },
   methods: {
     launchFetching(link) {
@@ -89,7 +85,10 @@ export default {
     fetchMessagesFirstTime() {
       this.showSpinner = true;
       this.launchFetching(`/api/user/${this.chatWith.id}/messages`).then((response) => {
-        this.messages = response.data.data;
+        this.$store.commit("User/setMessages", {
+          user: this.chatWith,
+          messages: response.data.data,
+        });
         this.next_link = response.data.links.next;
         this.showSpinner = false;
         this.scrollBottom();
@@ -97,7 +96,7 @@ export default {
     },
     scrollBottom() {
       this.$nextTick(() => {
-        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight;
+        this.$refs.messages.scrollTop = this.$refs.messages.scrollHeight + 100;
       });
     },
     loadMoreOnScroll() {
@@ -118,7 +117,10 @@ export default {
       }
 
       this.launchFetching(this.next_link).then((response) => {
-        this.messages = response.data.data.concat(this.messages);
+        this.$store.commit("User/loadMoreMessages", {
+          user: this.chatWith,
+          messages: response.data.data,
+        });
         this.next_link = response.data.links.next;
         this.avoidRescrolling();
       });
@@ -133,19 +135,48 @@ export default {
       return message.sender_id == this.$store.state.User.me.id;
     },
     sendMessage($event) {
-      window.axios
-        .post(`/api/user/${this.chatWith.id}/messages`, {
-          text: $event.target.innerText,
-        })
-        .then((response) => {
-          if (response.data.success) {
-            window.toastr.success(response.data.success);
+      let message = {
+        text: $event.target.innerText.trim(),
+        sender_id: this.$store.state.User.me.id,
+        receiver_id: this.chatWith.id,
+        show_date: false,
+      };
 
-            return this.messages.push(response.data.data);
-          }
+      this.$store.commit("User/addMessage", {
+        user: this.chatWith,
+        message,
+      });
 
-          window.toastr("error", response.data);
+      this.scrollBottom();
+
+      $event.target.innerText = "";
+
+      window.axios.post(`/api/user/${this.chatWith.id}/messages`, { text: message.text });
+    },
+    listenOnMessageSent() {
+      bus.$on("MessageSent", (e) => {
+        //make sure message sent belong to the person
+        if (e.sender.id != this.chatWith.id) {
+          return;
+        }
+
+        this.playNotificationSound();
+
+        //push message to user chat
+        this.$store.commit("User/addMessage", {
+          user: e.sender,
+          message: e.message,
         });
+
+        this.scrollBottom();
+      });
+
+      this.$on("hooks:beforeDestroy", () => {
+        bus.$off("MessageSent");
+      });
+    },
+    playNotificationSound() {
+      new Audio("/audio/message.mp3").play();
     },
   },
 };
@@ -153,10 +184,8 @@ export default {
 
 <style lang="scss" scoped>
 .messenger {
-  position: fixed;
-  bottom: 0px;
-  right: 6rem;
-  margin-right: 1rem;
+  margin-left: 7px;
+  margin-right: 7px;
   background: white;
   width: 320px;
   border-radius: 1rem;
@@ -205,6 +234,7 @@ export default {
     height: 300px;
     overflow: auto;
     padding: 0 1rem;
+    position: relative;
     .show-date {
       text-align: center;
       color: gray;
@@ -219,6 +249,7 @@ export default {
       padding: 7px;
       color: white;
       border-radius: 1rem;
+      white-space: pre-wrap;
     }
     .received {
       margin: 5px 0px;
@@ -233,6 +264,7 @@ export default {
         background: #e5e4e4;
         padding: 7px;
         border-radius: 1rem;
+        white-space: pre-wrap;
       }
     }
     .no-messages-yet {
@@ -256,6 +288,7 @@ export default {
   }
   .write-message {
     [contenteditable="true"] {
+      display: flex;
       padding: 1rem;
       max-height: 100px;
       overflow: auto;

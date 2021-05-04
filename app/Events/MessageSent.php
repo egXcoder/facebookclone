@@ -17,18 +17,18 @@ class MessageSent implements ShouldBroadcast
 
     protected $receiver;
     public $sender;
-    public $text;
+    public $message;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct(User $sender, User $receiver, $text)
+    public function __construct(User $sender, User $receiver, $message)
     {
         $this->sender = $sender;
         $this->receiver = $receiver;
-        $this->text = $text;
+        $this->message = $message;
     }
 
     /**
